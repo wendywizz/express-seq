@@ -1,3 +1,4 @@
 https://medium.com/@prajramesh93/getting-started-with-node-express-and-mysql-using-sequelize-ed1225afc3e0
 https://www.esparkinfo.com/node-js-with-mysql-using-sequelize-express.html
 https://morioh.com/p/fe03e5149f97
+https://bezkoder.com/node-js-express-sequelize-mysql/
