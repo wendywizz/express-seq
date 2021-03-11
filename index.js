@@ -10,14 +10,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const db = require("./app/models");
-db.sequelize.sync();
-
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to API"});
-})
+});
 
-require("./app/routes/rstudent.routes")(app);
+require("./app/ploylora/routes/RStudentRoute.js")(app);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

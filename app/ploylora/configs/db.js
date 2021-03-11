@@ -4,6 +4,7 @@ module.exports = {
   PASSWORD: "lesiy[Ploy",
   DB: "PloyLora",
   dialect: "mysql",
+  port: 3306,
   pool: {
     max: 5,
     min: 0,
