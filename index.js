@@ -14,7 +14,10 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to API"});
 });
 
+// Ploylora Database
 require("./app/ploylora/routes/RStudentRoute.js")(app);
+
+// Jobboard Database
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
