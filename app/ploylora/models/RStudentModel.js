@@ -1,10 +1,11 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+
+const RStudentModel = function(sequelize, DataTypes) {
   return sequelize.define('R_STUDENT', {
     STUD_ID: {
       type: DataTypes.STRING(13),
       primaryKey: true,
-      allowNull: true
+      allowNull: false
     },
     ENT_METHOD: {
       type: DataTypes.STRING(2),
@@ -214,3 +215,8 @@ module.exports = function(sequelize, DataTypes) {
     ]
   });
 };
+
+// To avoid table creation
+RStudentModel.sync = () => Promise.resolve();
+
+module.exports = RStudentModel;

@@ -1,5 +1,5 @@
 const db = require("../models")
-const rstudent = db.rstudent;
+const RStudent = db.RStudent;
 const Op = db.Sequelize.Op;
 
 exports.findAll = (req, res) => {
@@ -29,7 +29,7 @@ exports.identifyStudent = (req, res) => {
       STUD_ID: studentCode
     }
 
-    rstudent.findAll({
+    RStudent.findAll({
       attributes: ["STUD_ID"],
       where: conditions
     }).then(data => {

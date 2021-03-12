@@ -10,14 +10,18 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Sync Database
+const dbJobboard = require("./app/jobboard/models")
+dbJobboard.sequelize.sync({ force: true })
+
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to API"});
 });
 
-// Ploylora Database
+// Ploylora Routes
 require("./app/ploylora/routes/RStudentRoute.js")(app);
 
-// Jobboard Database
+// Jobboard Routes
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
