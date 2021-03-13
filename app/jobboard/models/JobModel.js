@@ -98,7 +98,12 @@ module.exports = function(sequelize, DataTypes) {
     },
     created_by: {
       type: DataTypes.BIGINT,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'User',
+        key: 'user_id',
+        as: 'created_by'
+      }
     }
   }, {
     sequelize,

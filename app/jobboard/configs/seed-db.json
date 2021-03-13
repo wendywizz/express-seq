@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "admin",
+    "password": "12123",
+    "database": "jobboard",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}

@@ -17,8 +17,11 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+db.User = require('./UserModel.js')(sequelize, Sequelize);
 db.Company = require('./CompanyModel.js')(sequelize, Sequelize);
 db.Job = require('./JobModel.js')(sequelize, Sequelize);
-db.User = require('./ UserModel.js')(sequelize, Sequelize);
+db.Region = require('./RegionModel')(sequelize, Sequelize);
+db.Province = require('./ProvinceModel')(sequelize, Sequelize);
+db.District = require('./DistrictModel')(sequelize, Sequelize);
 
 module.exports = db;
