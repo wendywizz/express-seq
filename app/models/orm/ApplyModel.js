@@ -4,6 +4,7 @@ module.exports = function(sequelize, DataTypes) {
     apply_id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false      
     },
     job_id: {

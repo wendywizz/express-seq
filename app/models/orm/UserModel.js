@@ -1,9 +1,9 @@
-const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('User', {
     user_id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false
     },
     user_type: {
@@ -19,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    student_id: {
+    student_code: {
       type: DataTypes.STRING(15),
       allowNull: true
     },

@@ -4,6 +4,7 @@ module.exports = function(sequelize, DataTypes) {
     company_id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false
     },
     company_name: {
