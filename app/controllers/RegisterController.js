@@ -38,7 +38,21 @@ async function registerApplicantWithEmail(req, res) {
   res.send({ result, message });
 }
 
+async function activateUser(req, res) {
+ const id = req.query.uid;
+
+ const success = await UserMap.activateUserByID(id);
+ let message = "Save failed", result = false;
+
+ if (success) {
+   message = "Save successed";
+   result = true;
+ }
+ res.send({ result, message });
+}
+
 module.exports = {
   identifyStudent,
-  registerApplicantWithEmail
+  registerApplicantWithEmail,
+  activateUser
 }

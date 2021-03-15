@@ -32,7 +32,20 @@ async function registerApplicantWithEmail(data) {
   }
 }
 
+async function activateUserByID(id) {
+  return orm.User.update({ 
+    active: true 
+  }, { 
+    where: { user_id: id } 
+  }).then(() => {
+    return true;
+  }).catch(() => {
+    return false;
+  });
+}
+
 module.exports = {
   checkIfStudentRegistered,
-  registerApplicantWithEmail
+  registerApplicantWithEmail,
+  activateUserByID
 }
