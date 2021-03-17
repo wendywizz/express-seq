@@ -13,6 +13,8 @@ async function checkIfStudentRegistered(studentCode) {
     } else {
       return false;
     }
+  }).catch(() => {
+    return false;
   });
 }
 

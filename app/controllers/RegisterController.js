@@ -7,7 +7,12 @@ async function identifyStudent(req, res) {
   const studentCode = body.std_code, cardNo = body.card_no;
 
   const pass = await StudentMap.identifyStudent(studentCode, cardNo);
-  res.send({ pass });
+  let success = false, message = `Student code ${studentCode} not found`
+  if (pass) {
+    success = true;;
+    message = "Ideitify completed";
+  }
+  res.send({ success, message });
 }
 
 async function registerApplicantWithEmail(req, res) {
@@ -39,16 +44,16 @@ async function registerApplicantWithEmail(req, res) {
 }
 
 async function activateUser(req, res) {
- const id = req.query.uid;
+  const id = req.query.uid;
 
- const success = await UserMap.activateUserByID(id);
- let message = "Save failed", result = false;
+  const success = await UserMap.activateUserByID(id);
+  let message = "Save failed", result = false;
 
- if (success) {
-   message = "Save successed";
-   result = true;
- }
- res.send({ result, message });
+  if (success) {
+    message = "Save successed";
+    result = true;
+  }
+  res.send({ result, message });
 }
 
 module.exports = {
