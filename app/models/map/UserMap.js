@@ -9,12 +9,21 @@ async function checkIfStudentRegistered(studentCode) {
   };
   return await orm.User.count({ where: conditions }).then(rowCount => {
     if (rowCount > 0) {
-      return true;
+      return {
+        result: 1,
+        message: `User code#${studentCode} exist`
+      }
     } else {
-      return false;
+      return {
+        result: 0,
+        message: `User code#${studentCode} doesn't exist`
+      }
     }
-  }).catch(() => {
-    return false;
+  }).catch(error => {
+    return {
+      result: -1,
+      message: error.message
+    };
   });
 }
 
@@ -49,9 +58,15 @@ async function activateUserByID(id) {
   }, { 
     where: { user_id: id } 
   }).then(() => {
-    return true;
-  }).catch(() => {
-    return false;
+    return {
+      result: 1,
+      message: "Success"
+    }
+  }).catch(error => {
+    return {
+      result: 0,
+      message: error.message
+    }
   });
 }
 
