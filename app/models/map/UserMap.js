@@ -25,12 +25,21 @@ async function registerApplicantWithEmail(data) {
   if (!exist) {
     // Create New User
     return await orm.User.create(data).then(() => {
-      return 1;
-    }).catch(() => {
-      return 0;
+      return {
+        result: 1,
+        message: "Registration is complete"
+      }
+    }).catch(error => {
+      return {
+        result: 0,
+        message: error.message
+      }
     })
   } else {
-    return -1;
+    return {
+      result: -1,
+      message: "User already exist"
+    }
   }
 }
 

@@ -26,20 +26,8 @@ async function registerApplicantWithEmail(req, res) {
     created_at: dateTime.currentDateTime()
   }
 
-  const result = await UserMap.registerApplicantWithEmail(data);
-  let message = null;
-
-  switch (result) {
-    case 0: default:
-      message = "Registration failed";
-      break;
-    case 1:
-      message = "Registration successed";
-      break;
-    case -1:
-      message = "Already registered";
-      break;
-  }
+  const { result, message } = await UserMap.registerApplicantWithEmail(data);
+  
   res.send({ result, message });
 }
 
