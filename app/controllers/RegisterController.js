@@ -6,9 +6,9 @@ async function identifyStudent(req, res) {
   const body = req.body;
   const studentCode = body.std_code, cardNo = body.card_no;
 
-  const { result, message } = await StudentMap.identifyStudent(studentCode, cardNo);
-
-  res.send({ result, message });
+  const { status, message } = await StudentMap.identifyStudent(studentCode, cardNo);
+  
+  res.send({ status, message });
 }
 
 async function registerApplicantWithEmail(req, res) {
@@ -22,17 +22,17 @@ async function registerApplicantWithEmail(req, res) {
     created_at: dateTime.currentDateTime()
   }
 
-  const { result, message } = await UserMap.registerApplicantWithEmail(data);
+  const { status, message } = await UserMap.registerApplicantWithEmail(data);
   
-  res.send({ result, message });
+  res.send({ status, message });
 }
 
 async function activateUser(req, res) {
   const id = req.query.uid;
 
-  const { result, message } = await UserMap.activateUserByID(id);
+  const { status, message } = await UserMap.activateUserByID(id);
   
-  res.send({ result, message });
+  res.send({ status, message });
 }
 
 module.exports = {

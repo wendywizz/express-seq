@@ -12,11 +12,22 @@ async function identifyStudent(studentCode, cardNo) {
   };
   return await orm.RStudent.count({ where: conditions }).then(rowCount => {
     if (rowCount > 0) {
-      return true;
+      return {
+        status: 1,
+        message: `Student code#${studentCode} is available`
+      };
     } else {
-      return false;
+      return {
+        status: 0,
+        message: `Student data not found`
+      }
     }
-  });
+  }).catch(error => {
+    return {
+      status: -1,
+      message: error.message
+    }
+  })
 }
 module.exports = {
   identifyStudent

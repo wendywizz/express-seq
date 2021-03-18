@@ -10,44 +10,52 @@ async function checkIfStudentRegistered(studentCode) {
   return await orm.User.count({ where: conditions }).then(rowCount => {
     if (rowCount > 0) {
       return {
-        result: 1,
+        status: 1,
         message: `User code#${studentCode} exist`
       }
     } else {
       return {
-        result: 0,
+        status: 0,
         message: `User code#${studentCode} doesn't exist`
       }
     }
   }).catch(error => {
     return {
-      result: -1,
+      status: -1,
       message: error.message
     };
   });
 }
 
+async function checkIfEmailExist(email) {
+  const conditions = {
+    email: {
+      [Op.eq]: email
+    }
+  }
+}
+
 async function registerApplicantWithEmail(data) {
   // Check if user already registered
   const studentCode = data.student_code;
-  const exist = await checkIfStudentRegistered(studentCode);
-  if (!exist) {
+  const { status, message } = await checkIfStudentRegistered(studentCode);
+  if (!status) {
     // Create New User
     return await orm.User.create(data).then(() => {
       return {
-        result: 1,
+        status: 1,
         message: "Registration is complete"
       }
     }).catch(error => {
       return {
-        result: 0,
+        status: 0,
         message: error.message
       }
     })
   } else {
     return {
-      result: -1,
-      message: "User already exist"
+      status: -1,
+      message
     }
   }
 }
@@ -59,12 +67,12 @@ async function activateUserByID(id) {
     where: { user_id: id } 
   }).then(() => {
     return {
-      result: 1,
+      status: 1,
       message: "Success"
     }
   }).catch(error => {
     return {
-      result: 0,
+      status: 0,
       message: error.message
     }
   });
