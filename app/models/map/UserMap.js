@@ -1,17 +1,36 @@
 const orm = require("../orm");
 const { Op } = require("sequelize");
 
-async function login(email, password) {
+async function authenUserByEmail(email, password) {
   const conditions = {
     email: {
       [Op.eq]: email
     },
     password: {
       [Op.eq]: password
+    },
+    active: {
+      [Op.eq]: true
     }
   }
   return await orm.User.findOne({where: conditions}).then(data => {
-
+    let status = 0, result = null, message = "Login failed"
+    if (data) {
+      status = 1
+      result = {
+        id: data.user_id,
+        student_code: data.student_code,
+        type: data.user_type
+      }
+      message = "Login successed"
+    }
+    return { status, result ,message}
+  }).catch(error => {
+    return {
+      status: 0,
+      result: null,
+      message: error.message
+    }
   })
 }
 
@@ -25,12 +44,12 @@ async function checkIfStudentRegistered(studentCode) {
     if (rowCount > 0) {
       return {
         status: 1,
-        message: `User code#${studentCode} exist`
+        message: `User code#${studentCode} registered`
       }
     } else {
       return {
         status: 0,
-        message: `User code#${studentCode} doesn't exist`
+        message: `User code#${studentCode} is not register`
       }
     }
   }).catch(error => {
@@ -74,7 +93,7 @@ async function registerApplicantWithEmail(data) {
 
   // Check if student code registrated
   resp = await checkIfStudentRegistered(studentCode)
-  if (!resp.status) {
+  if (resp.status) {
     return { 
       status: 0, 
       message: resp.message 
@@ -124,7 +143,7 @@ async function activateUserByID(id) {
 }
 
 module.exports = {
-  login,
+  authenUserByEmail,
   checkIfStudentRegistered,
   registerApplicantWithEmail,
   activateUserByID

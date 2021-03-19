@@ -10,6 +10,7 @@
     "express": "^4.17.1",
     "moment": "^2.29.1",
     "mysql2": "^2.2.5",
+    "node-fetch": "^2.6.1",
     "sequelize": "^6.5.0",
     "sequelize-auto": "^0.8.1"
   },
@@ -22,5 +23,5 @@
     "seed:dev": "sequelize db:seed:all --config app/jobboard/configs/seed-db.json --seeders-path app/jobboard/seeders"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC"  
 }
