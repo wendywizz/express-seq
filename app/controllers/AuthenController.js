@@ -1,9 +1,9 @@
 const { UserMap } = require("../models/map");
-const { credential } = require("../models/OAuth2")
+const { credential, verifyToken } = require("../models/OAuth2")
 
-async function loginByEmail(req, res) {
+async function signInByEmail(req, res) {
   const { email, password } = req.body
-  const { status, result, message } = await UserMap.authenUserByEmail(email, password)
+  const { status, result, message } = await UserMap.signInByEmail(email, password)
   let accessToken = null
 
   if (status) {
@@ -12,9 +12,17 @@ async function loginByEmail(req, res) {
     accessToken = access_token
   }
   
-  res.send({ status, accessToken, message })
+  res.send({ status, accessToken, message, result })
+}
+
+async function checkSession(req, res) {
+  const { access_token } = req.query
+  const result = await verifyToken(access_token)
+
+  res.send({result})
 }
 
 module.exports = {
-  loginByEmail
+  signInByEmail,
+  checkSession
 }

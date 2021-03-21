@@ -1,9 +1,9 @@
 "use strict";
-const districtData = require("../data/json/district.json");
+const data = require("../data/json/district.json");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert("district", districtData, {});
+    await queryInterface.bulkInsert("district", data, {});
   },
 
   down: async (queryInterface, Sequelize) => {

@@ -1,0 +1,7 @@
+const DISPLAY_START = 0
+const DISPLAY_LENGTH = 12
+
+module.exports = {
+  DISPLAY_LENGTH,
+  DISPLAY_START
+}

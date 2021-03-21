@@ -19,10 +19,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(150),
       allowNull: false
     },
-    region_id: {
+    region: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0
+      references: {
+        model: 'Region',
+        key: 'id',
+        as: 'region'
+      }
     }
   }, {
     sequelize,

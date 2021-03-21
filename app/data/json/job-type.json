@@ -1,0 +1,18 @@
+[
+  {
+    "job_type_id": 1,
+    "job_type_name": "Full Time"
+  },
+  {
+    "job_type_id": 2,
+    "job_type_name": "Part Time"
+  },
+  {
+    "job_type_id": 1,
+    "job_type_name": "ฝึกงาน"
+  },
+  {
+    "job_type_id": 1,
+    "job_type_name": "สหกิจ"
+  }
+]

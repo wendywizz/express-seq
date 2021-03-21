@@ -1,6 +1,5 @@
-const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('Job', {
+  return sequelize.define("Job", {
     job_id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -10,6 +9,15 @@ module.exports = function(sequelize, DataTypes) {
     job_position: {
       type: DataTypes.STRING(50),
       allowNull: false
+    },
+    job_type: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Jobtype',
+        key: 'job_type_id',
+        as: 'job_type'
+      }
     },
     job_duty: {
       type: DataTypes.TEXT,
@@ -25,7 +33,12 @@ module.exports = function(sequelize, DataTypes) {
     },
     salary_type: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'SalaryType',
+        key: 'salary_type_id',
+        as: 'salary_type'
+      }
     },
     salary_min: {
       type: DataTypes.INTEGER,
@@ -50,20 +63,34 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(5),
       allowNull: true,      
     },
-    sub_area: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    area: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    country: {
+    district: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      defaultValue: 66
+      references: {
+        model: 'District',
+        key: 'id',
+        as: 'district'
+      }
     },
-    require_amount: {
+    province: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Province',
+        key: 'id',
+        as: 'province'
+      }
+    },
+    region: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Region',
+        key: 'id',
+        as: 'region'
+      }
+    },
+    require: {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 0
@@ -111,6 +138,6 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'job',
     modelName: 'Job',
     timestamps: false,
-    indexes: [{ unique: true, fields: ['job_id', 'job_position'] }]
+    indexes: [{ unique: true, fields: ['job_id','job_position'] }]
   })
 }

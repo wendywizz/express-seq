@@ -1,0 +1,14 @@
+[
+  {
+    "salary_type_id": 1,
+    "salary_type_name": "ตามโครงสร้าง"
+  },
+  {
+    "salary_type_id": 2,
+    "salary_type_name": "ตามตกลง"
+  },
+  {
+    "salary_type_id": 1,
+    "salary_type_name": "ตามช่วงกำหนด"
+  }
+]

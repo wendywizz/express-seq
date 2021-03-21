@@ -1,5 +1,5 @@
-const orm = require("../orm");
-const { Op } = require("sequelize");
+const { RStudent } = require("../orm")
+const { Op } = require("sequelize")
 
 async function identifyStudent(studentCode, cardNo) {
   const conditions = {
@@ -10,7 +10,7 @@ async function identifyStudent(studentCode, cardNo) {
       [Op.eq]: studentCode
     }
   };
-  return await orm.RStudent.count({ where: conditions }).then(rowCount => {
+  return await RStudent.count({ where: conditions }).then(rowCount => {
     if (rowCount > 0) {
       return {
         status: 1,
@@ -24,7 +24,7 @@ async function identifyStudent(studentCode, cardNo) {
     }
   }).catch(error => {
     return {
-      status: -1,
+      status: 0,
       message: error.message
     }
   })

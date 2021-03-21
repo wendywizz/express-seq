@@ -1,7 +1,7 @@
 const orm = require("../orm");
 const { Op } = require("sequelize");
 
-async function authenUserByEmail(email, password) {
+async function signInByEmail(email, password) {
   const conditions = {
     email: {
       [Op.eq]: email
@@ -143,7 +143,7 @@ async function activateUserByID(id) {
 }
 
 module.exports = {
-  authenUserByEmail,
+  signInByEmail,
   checkIfStudentRegistered,
   registerApplicantWithEmail,
   activateUserByID

@@ -19,10 +19,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(150),
       allowNull: false
     },
-    province_id: {
+    province: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0
+      references: {
+        model: 'Province',
+        key: 'id',
+        as: 'province'
+      }
     }
   }, {
     sequelize,
