@@ -32,7 +32,7 @@ async function listByCompany(req, res) {
 }
 
 async function add(req, res) {
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, sub_area, area, country, require, cid, uid } = req.body
+  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, require, cid, uid } = req.body
   const data = {
     job_position: position,
     job_type: job_type,
@@ -45,9 +45,9 @@ async function add(req, res) {
     work_days: work_days,
     work_time_start: work_timestart,
     work_time_end: work_timeend,
-    sub_area: sub_area,
-    area: area,
-    country: country,
+    district: area_did,
+    province: area_pid,    
+    region: area_rid,
     require: require,
     company_owner: cid,
     created_by: uid

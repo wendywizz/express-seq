@@ -1,7 +1,0 @@
-{
-    "username": "admin",
-    "password": "12123",
-    "database": "jobboard",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
-}

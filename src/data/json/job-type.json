@@ -8,11 +8,11 @@
     "job_type_name": "Part Time"
   },
   {
-    "job_type_id": 1,
+    "job_type_id": 3,
     "job_type_name": "ฝึกงาน"
   },
   {
-    "job_type_id": 1,
+    "job_type_id": 4,
     "job_type_name": "สหกิจ"
   }
 ]

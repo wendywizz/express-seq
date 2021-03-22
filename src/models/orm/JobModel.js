@@ -13,11 +13,11 @@ module.exports = function(sequelize, DataTypes) {
     job_type: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: 'Jobtype',
+      /*references: {
+        model: 'JobType',
         key: 'job_type_id',
         as: 'job_type'
-      }
+      }*/
     },
     job_duty: {
       type: DataTypes.TEXT,
@@ -34,11 +34,11 @@ module.exports = function(sequelize, DataTypes) {
     salary_type: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: {
+      /*references: {
         model: 'SalaryType',
         key: 'salary_type_id',
         as: 'salary_type'
-      }
+      }*/
     },
     salary_min: {
       type: DataTypes.INTEGER,
@@ -66,29 +66,29 @@ module.exports = function(sequelize, DataTypes) {
     district: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: {
+      /*references: {
         model: 'District',
         key: 'id',
         as: 'district'
-      }
+      }*/
     },
     province: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: {
+      /*references: {
         model: 'Province',
         key: 'id',
         as: 'province'
-      }
+      }*/
     },
     region: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: {
+      /*references: {
         model: 'Region',
         key: 'id',
         as: 'region'
-      }
+      }*/
     },
     require: {
       type: DataTypes.INTEGER,
@@ -118,20 +118,20 @@ module.exports = function(sequelize, DataTypes) {
     company_owner: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      references: {
+      /*references: {
         model: 'Company',
         key: 'company_id',
         as: 'company_owner'
-      }
+      }*/
     },
     created_by: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      references: {
+      /*references: {
         model: 'User',
         key: 'user_id',
         as: 'created_by'
-      }
+      }*/
     }
   }, {
     sequelize,

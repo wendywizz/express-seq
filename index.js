@@ -17,13 +17,13 @@ app.use(function (req, res, next) {
 })
 
 // Sync Database
-const syncLocal = require("./app/models/orm").local
-syncLocal.sync({ force: true })
+/*const syncLocal = require("./src/models/orm").local
+syncLocal.sync({ force: true })*/
 
 // Add Routes
-require("./app/routes/RegisterRoute.js")(app)
-require("./app/routes/AuthenRoute.js")(app)
-require("./app/routes/JobRoute.js")(app)
+require("./src/routes/RegisterRoute.js")(app)
+require("./src/routes/AuthenRoute.js")(app)
+require("./src/routes/JobRoute.js")(app)
 
 const port = process.env.PORT || 3001
 app.listen(port, () => {

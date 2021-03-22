@@ -1,12 +1,13 @@
-const { JobModel } = require("../orm")
+const { Job } = require("../orm")
 const { sequelize, Op } = require("sequelize")
+const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
 const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
 const JOB_AVAILABLE_DAY = 90
 
 async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLAY_START) {
   let status = 0, result = [], message = "Data not found"
-  await JobModel.findAll({
+  await Job.findAll({
     where: conditions,
     limit: length,
     offset: start,
@@ -100,7 +101,13 @@ async function getJobByCompany(id, length = DISPLAY_LENGTH, start = DISPLAY_STAR
       [Op.eq]: id
     }
   }
-  return getJob(conditions, length, start)
+  const { status, result, message } = await getJob(conditions, length, start)
+
+  let row = null
+  if (result.length > 0) {
+    row = result[0]
+  }
+  return { status, result: row, message }
 }
 
 async function getJobByID(id) {
@@ -110,7 +117,7 @@ async function getJobByID(id) {
       [Op.eq]: id
     }
   }
-  await JobModel.findOne({ where: conditions }).then(data => { 
+  await Job.findOne({ where: conditions }).then(data => { 
     if (data) {
       status = 1
       result = data
@@ -127,10 +134,10 @@ async function createJob(data) {
   let status = 0, result = null, message = "Add new job failed"
   const insertData = {
     created_at: currentDateTime(),
-    expire_at: formatDate(moment(currentDateTime).add(JOB_AVAILABLE_DAY, "d")),
+    expire_at: formatDate(moment(currentDateTime()).add(JOB_AVAILABLE_DAY, "d")),
     ...data
   }
-  await JobModel.create(insertData).then(data => {
+  /*const newJob = await Job.build(insertData).then(data => {    
     if (data) {
       status = 1
       result = data
@@ -138,6 +145,10 @@ async function createJob(data) {
     }
   }).catch(error => {
     message = error.message
+  })*/
+  const newJob = Job.build(insertData)
+  await newJob.save().then(data => {
+    console.log("TESTSETEST")
   })
 
   return { status, result, message }
@@ -154,7 +165,7 @@ async function updateJobByID(id, data) {
       [Op.eq]: id
     }
   }
-  await JobModel.update(updateData, { where: conditions }).then(data => {
+  await Job.update(updateData, { where: conditions }).then(data => {
     status = 1
     result = data
     message = `Update job#${id} successed`
@@ -177,7 +188,7 @@ async function deleteJobByID(id) {
       [Op.eq]: id
     }
   }
-  await JobModel.update(updateFields, { where: conditions }).then(() => {
+  await Job.update(updateFields, { where: conditions }).then(() => {
     status = 1;
     message = `Remove job#${id} successed`
   }).catch(error => {

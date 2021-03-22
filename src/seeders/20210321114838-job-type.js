@@ -12,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-   await queryInterface.bulkInsert("job-type", data, {})
+   await queryInterface.bulkInsert("job_type", data, {})
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -22,6 +22,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("job-type", null, {})
+    await queryInterface.bulkDelete("job_type", null, {})
   }
 };

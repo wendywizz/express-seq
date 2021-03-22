@@ -1,4 +1,4 @@
-const { localDB, ployloraDB } = require('../../configs/database.js')
+const { localDB, ployloraDB } = require('../../config/database.js')
 const envMode = process.env.NODE_ENV
 
 const localConn = (envMode === "production" ? localDB.production : localDB.development);
@@ -6,7 +6,6 @@ const ployloraConn = (envMode === "production" ? ployloraDB.production : ploylor
 
 // Setting Local database connection instance
 const Sequelize = require('sequelize');
-const { or } = require('sequelize');
 const local = new Sequelize(localConn.database, localConn.username, localConn.password, {
   host: localConn.host,
   dialect: localConn.dialect,

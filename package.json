@@ -20,9 +20,8 @@
   "scripts": {
     "start": "nodemon ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed:dev": "sequelize db:seed:all --config app/configs/seed-db.json --seeders-path app/seeders"
+    "seed": "sequelize db:seed:all --config src/config/config.json --seeders-path src/seeders --debug"
   },
   "author": "",
   "license": "ISC"
 }
-

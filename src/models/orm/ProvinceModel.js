@@ -22,11 +22,11 @@ module.exports = function(sequelize, DataTypes) {
     region: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
+      /*references: {
         model: 'Region',
         key: 'id',
         as: 'region'
-      }
+      }*/
     }
   }, {
     sequelize,

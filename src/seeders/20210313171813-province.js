@@ -2,7 +2,7 @@
 const provinceData = require("../data/json/province.json");
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface, Sequelize) => {    
     await queryInterface.bulkInsert("province", provinceData, {});
   },
 
