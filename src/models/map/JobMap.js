@@ -1,5 +1,5 @@
 const { local, Job } = require("../orm")
-const { Op } = require("sequelize")
+const { Op, QueryTypes } = require("sequelize")
 const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
 const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
@@ -74,7 +74,7 @@ async function searchJob(params, length=DISPLAY_LENGTH, start=DISPLAY_START) {
   sqlCommand += ` ORDER BY t.created_at DESC LIMIT ${length} OFFSET ${start}`
 
   await local
-    .query(sqlCommand)
+    .query(sqlCommand, { raw: true, type: QueryTypes.SELECT })
     .then(data => {
       if (data) {
         status = 1,
