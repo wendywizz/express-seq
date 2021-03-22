@@ -1,9 +1,10 @@
 "use strict";
-const regionData = require("../data/json/region.json");
+const data = require("../data/json/region.json");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert("region", regionData, {});
+    await queryInterface.bulkDelete("region", null, {})
+    await queryInterface.bulkInsert("region", data, {});
   },
 
   down: async (queryInterface, Sequelize) => {

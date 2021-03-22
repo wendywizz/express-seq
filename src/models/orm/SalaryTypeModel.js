@@ -6,7 +6,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false
     },
     salary_type_name: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(50),
       allowNull: false
     }
   }, {

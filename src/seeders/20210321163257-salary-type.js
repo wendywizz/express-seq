@@ -3,25 +3,11 @@ const data = require("../data/json/salary-type.json")
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
-   await queryInterface.bulkInsert("salary-type", data, {})
+    await queryInterface.bulkDelete("salary_type", null, {})
+    await queryInterface.bulkInsert("salary_type", data, {})
   },
 
   down: async (queryInterface, Sequelize) => {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-    await queryInterface.bulkDelete("salary-type", null, {})
+    await queryInterface.bulkDelete("salary_type", null, {})
   }
 };

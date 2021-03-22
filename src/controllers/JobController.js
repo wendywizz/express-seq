@@ -2,7 +2,7 @@ const { JobMap } = require("../models/map")
 
 async function view(req, res) {
   const { id } = req.query
-  const { status, result, message } = JobMap.getJobByID(id)
+  const { status, result, message } = await JobMap.getJobByID(id)
 
   res.send({ status, result, message })
 }
@@ -21,14 +21,14 @@ async function search(req, res) {
   }
   const { status, result, message } = await JobMap.searchJob(params)
 
-  res.send({ status, result, message })
+  res.send({ status, result, message, itemCount: result.length })
 }
 
 async function listByCompany(req, res) {
-  const { company } = req.query
-  const { status, result, message } = await JobMap.getJobByCompany(company)
+  const { id } = req.query
+  const { status, result, message } = await JobMap.getJobByCompany(id)
 
-  res.send({ status, result, message })
+  res.send({ status, result, message, itemCount: result.length })
 }
 
 async function add(req, res) {
@@ -52,13 +52,13 @@ async function add(req, res) {
     company_owner: cid,
     created_by: uid
   }
-  const { status, result, message } = JobMap.createJob(data)
+  const { status, result, message } = await JobMap.createJob(data)
 
   res.send({ status, result, message })
 }
 
 async function save(req, res) {
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, sub_area, area, country, require, jid } = req.body
+  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, sub_area, area, country, require, id } = req.body
   const data = {
     job_position: position,
     job_type: job_type,
@@ -76,14 +76,14 @@ async function save(req, res) {
     country: country,
     require: require,
   }
-  const { status, result, message } = JobMap.updateJobByID(jid, data)
+  const { status, message } = await JobMap.updateJobByID(id, data)
 
-  res.send({ status, result, message })
+  res.send({ status, message })
 }
 
 async function remove(req, res) {
   const { id } = req.body
-  const { status, message } = JobMap.deleteJobByID(id)
+  const { status, message } = await JobMap.deleteJobByID(id)
 
   res.send({ status, message })
 }

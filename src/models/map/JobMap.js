@@ -1,5 +1,5 @@
-const { Job } = require("../orm")
-const { sequelize, Op } = require("sequelize")
+const { local, Job } = require("../orm")
+const { Op } = require("sequelize")
 const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
 const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
@@ -27,9 +27,9 @@ async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLA
   return { status, result, message }
 }
 
-async function searchJob(params) {
+async function searchJob(params, length=DISPLAY_LENGTH, start=DISPLAY_START) {
   let status = 0, result = [], message = "Data not found"
-  const sqlCommand = `
+  let sqlCommand = `
     SELECT 
       t.job_position, t.job_type, t.job_duty, t.job_performance, t.job_welfare, t.salary_min, t.salary_max,
       t.work_days, t.work_time_start, t.work_time_end, t.require, t.created_at AS created,
@@ -37,10 +37,10 @@ async function searchJob(params) {
       st.salary_type_name, jt.job_type_name,
       d.name_th, p.name_th, r.name
     FROM Job AS t
-    INNER JOIN company c ON t.company_owner = c.company_id,
+    INNER JOIN company c ON t.company_owner = c.company_id
     INNER JOIN salary_type st ON t.salary_type = st.salary_type_id
     INNER JOIN job_type jt ON t.job_type = jt.job_type_id
-    INNER JOIN distinct d ON t.distinct = d.id
+    INNER JOIN district d ON t.district = d.id
     INNER JOIN province p ON t.province = p.id
     INNER JOIN region r ON t.region = r.id
     WHERE t.active = 1
@@ -48,48 +48,39 @@ async function searchJob(params) {
     AND CURDATE() < t.expire_at
   `
   if (params.keyword) {
-    sqlCommand += `
-      AND (t.job_position LIKE '%${params.keyword}%'
-        OR c.company_name LIKE '%${params.keyword}%)'
-    `
+    sqlCommand += ` AND (t.job_position LIKE '%${params.keyword}%' OR c.company_name LIKE '%${params.keyword}%')`
   }
   if (params.job_type) {
-    sqlCommand += `
-      AND t.job_type = ${params.job_type}
-    `
+    sqlCommand += ` AND t.job_type = ${params.job_type}`
   }
   if (params.salary_type) {
-    sqlCommand += `
-      AND t.salary_type = ${params.salary_type}
-    `
+    sqlCommand += ` AND t.salary_type = ${params.salary_type}`
   }
   if (params.province) {
     if (Array.isArray(params.province)) {
-      sqlCommand += `
-        AND t.province IN (${params.province})
-      `
+      sqlCommand += ` AND t.province IN (${params.province})`
     }
   }
   if (params.district) {
     if (Array.isArray(params.district)) {
-      sqlCommand += `
-        AND t.district IN (${params.district})
-      `
+      sqlCommand += ` AND t.district IN (${params.district})`
     }
   }
   if (params.region) {
     if (Array.isArray(params.region)) {
-      sqlCommand += `
-        AND t.region IN (${params.region})
-      `
+      sqlCommand += ` AND t.region IN (${params.region})`
     }
   }
+  sqlCommand += ` ORDER BY t.created_at DESC LIMIT ${length} OFFSET ${start}`
 
-  await sequelize.query(sqlCommand, null, { raw: true })
+  await local
+    .query(sqlCommand)
     .then(data => {
-      status = 1,
-      result = data
-      message = `Data found ${data.length} records`
+      if (data) {
+        status = 1,
+        result = data
+        message = `Data found ${data.length} records`
+      }
     })
   
   return { status, result, message }
@@ -99,15 +90,14 @@ async function getJobByCompany(id, length = DISPLAY_LENGTH, start = DISPLAY_STAR
   const conditions = {
     company_owner: {
       [Op.eq]: id
+    },
+    deleted: {
+      [Op.eq]: 0
     }
   }
   const { status, result, message } = await getJob(conditions, length, start)
 
-  let row = null
-  if (result.length > 0) {
-    row = result[0]
-  }
-  return { status, result: row, message }
+  return { status, result, message }
 }
 
 async function getJobByID(id) {
@@ -115,6 +105,9 @@ async function getJobByID(id) {
   const conditions = {
     job_id: {
       [Op.eq]: id
+    },
+    deleted: {
+      [Op.eq]: 0
     }
   }
   await Job.findOne({ where: conditions }).then(data => { 
@@ -137,25 +130,21 @@ async function createJob(data) {
     expire_at: formatDate(moment(currentDateTime()).add(JOB_AVAILABLE_DAY, "d")),
     ...data
   }
-  /*const newJob = await Job.build(insertData).then(data => {    
+  await Job.create(insertData).then(data => {   
     if (data) {
       status = 1
-      result = data
+      result = data.dataValues
       message = "Add new job completed"
     }
   }).catch(error => {
     message = error.message
-  })*/
-  const newJob = Job.build(insertData)
-  await newJob.save().then(data => {
-    console.log("TESTSETEST")
   })
 
   return { status, result, message }
 }
 
 async function updateJobByID(id, data) {
-  let status = 0, result = null, message = `Update job#${id} failed`
+  let status = 0, message = `Update job#${id} failed`
   const updateData = {
     updated_at: currentDateTime(),
     ...data
@@ -166,14 +155,15 @@ async function updateJobByID(id, data) {
     }
   }
   await Job.update(updateData, { where: conditions }).then(data => {
-    status = 1
-    result = data
-    message = `Update job#${id} successed`
+    if (data) {
+      status = 1
+      message = `Update job#${id} successed`
+    }
   }).catch(error => {
     message = error.message
   })
 
-  return { status, result, message }
+  return { status, message }
 }
 
 async function deleteJobByID(id) {
