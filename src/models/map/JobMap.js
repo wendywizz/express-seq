@@ -1,4 +1,4 @@
-const { local, Job } = require("../orm")
+const { local, Job, JobType } = require("../orm")
 const { Op, QueryTypes } = require("sequelize")
 const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
@@ -123,6 +123,19 @@ async function getJobByID(id) {
   return { status, result, message }
 }
 
+async function getJobType() {
+  let status = 0, result = [], message = "No data found"
+  await JobType.findAll().then(data => {
+    status = 1
+    result = data
+    message = `There are data ${data.length} found`
+  }).catch(error => {
+    message = error.message
+  })
+
+  return { status, result, message }
+}
+
 async function createJob(data) {
   let status = 0, result = null, message = "Add new job failed"
   const insertData = {
@@ -179,7 +192,7 @@ async function deleteJobByID(id) {
     }
   }
   await Job.update(updateFields, { where: conditions }).then(() => {
-    status = 1;
+    status = 1
     message = `Remove job#${id} successed`
   }).catch(error => {
     message = error.message
@@ -193,6 +206,7 @@ module.exports = {
   getJobByID,
   getJobByCompany,
   getJob,
+  getJobType,
   createJob,
   updateJobByID,
   deleteJobByID
