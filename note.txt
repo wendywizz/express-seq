@@ -3,3 +3,4 @@ https://www.esparkinfo.com/node-js-with-mysql-using-sequelize-express.html
 https://morioh.com/p/fe03e5149f97
 https://bezkoder.com/node-js-express-sequelize-mysql/
 https://www.youtube.com/watch?v=1FQ1HHi87oQ
+https://stackoverflow.com/questions/61901662/how-to-create-a-custom-radio-button
