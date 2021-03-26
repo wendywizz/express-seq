@@ -22,8 +22,10 @@ syncLocal.sync({ force: true })*/
 
 // Add Routes
 require("./src/routes/RegisterRoute.js")(app)
+require("./src/routes/CompanyRoute.js")(app)
 require("./src/routes/AuthenRoute.js")(app)
 require("./src/routes/JobRoute.js")(app)
+require("./src/routes/AreaRoute.js")(app)
 
 const port = process.env.PORT || 3001
 app.listen(port, () => {

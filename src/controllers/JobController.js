@@ -24,22 +24,14 @@ async function search(req, res) {
   res.send({ status, result, message, itemCount: result.length })
 }
 
-async function listByCompany(req, res) {
-  const { id } = req.query
-  const { status, result, message } = await JobMap.getJobByCompany(id)
-
-  res.send({ status, result, message, itemCount: result.length })
-}
-
 async function getJobType(req, res) {
   const { status, result, message } = await JobMap.getJobType()
 
   res.send({ status, result, message })
 }
 
-async function add(req, res) {
-  console.log("REQ", req.body)
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, require, cid, uid } = req.body
+async function add(req, res) {  
+  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, require, cid, uid } = req.body  
   const data = {
     job_position: position,
     job_type: job_type,
@@ -98,7 +90,6 @@ async function remove(req, res) {
 module.exports = {
   view,
   search,
-  listByCompany,
   getJobType,
   add,
   save,

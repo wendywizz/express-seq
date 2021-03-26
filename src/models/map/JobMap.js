@@ -7,6 +7,7 @@ const JOB_AVAILABLE_DAY = 90
 
 async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLAY_START) {
   let status = 0, result = [], message = "Data not found"
+  
   await Job.findAll({
     where: conditions,
     limit: length,
@@ -83,20 +84,6 @@ async function searchJob(params, length=DISPLAY_LENGTH, start=DISPLAY_START) {
       }
     })
   
-  return { status, result, message }
-}
-
-async function getJobByCompany(id, length = DISPLAY_LENGTH, start = DISPLAY_START) {
-  const conditions = {
-    company_owner: {
-      [Op.eq]: id
-    },
-    deleted: {
-      [Op.eq]: 0
-    }
-  }
-  const { status, result, message } = await getJob(conditions, length, start)
-
   return { status, result, message }
 }
 
@@ -204,7 +191,6 @@ async function deleteJobByID(id) {
 module.exports = {
   searchJob,
   getJobByID,
-  getJobByCompany,
   getJob,
   getJobType,
   createJob,
