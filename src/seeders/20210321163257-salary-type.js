@@ -3,11 +3,11 @@ const data = require("../data/json/salary-type.json")
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete("salary_type", null, {})
-    await queryInterface.bulkInsert("salary_type", data, {})
+    await queryInterface.bulkDelete("salarytype", null, {})
+    await queryInterface.bulkInsert("salarytype", data, {})
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete("salary_type", null, {})
+    await queryInterface.bulkDelete("salarytype", null, {})
   }
 };

@@ -16,11 +16,9 @@ async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLA
       ["created_at", "DESC"]
     ]
   }).then(data => {
-    if (data) {
-      status = 1
-      result = data
-      message = `Data has been found ${data.length} records`
-    }
+    status = 1    
+    result = data
+    message = `Data has been found ${data.length} records`    
   }).catch(error => {
     message = error.message
   })
@@ -35,12 +33,13 @@ async function searchJob(params, length=DISPLAY_LENGTH, start=DISPLAY_START) {
       t.job_position, t.job_type, t.job_duty, t.job_performance, t.job_welfare, t.salary_min, t.salary_max,
       t.work_days, t.work_time_start, t.work_time_end, t.require, t.created_at AS created,
       c.company_name, c.logo_path AS company_logo, 
-      st.salary_type_name, jt.job_type_name,
+      st.id AS salary_type, st.name AS salary_type_name, 
+      jt.id AS job_type, jt.name AS job_type_name,
       d.name_th, p.name_th, r.name
     FROM Job AS t
     INNER JOIN company c ON t.company_owner = c.company_id
-    INNER JOIN salary_type st ON t.salary_type = st.salary_type_id
-    INNER JOIN job_type jt ON t.job_type = jt.job_type_id
+    INNER JOIN salary_type st ON t.salary_type = st.id
+    INNER JOIN job_type jt ON t.job_type = jt.id
     INNER JOIN district d ON t.district = d.id
     INNER JOIN province p ON t.province = p.id
     INNER JOIN region r ON t.region = r.id
@@ -77,11 +76,9 @@ async function searchJob(params, length=DISPLAY_LENGTH, start=DISPLAY_START) {
   await local
     .query(sqlCommand, { raw: true, type: QueryTypes.SELECT })
     .then(data => {
-      if (data) {
         status = 1,
         result = data
         message = `Data found ${data.length} records`
-      }
     })
   
   return { status, result, message }
@@ -98,11 +95,9 @@ async function getJobByID(id) {
     }
   }
   await Job.findOne({ where: conditions }).then(data => { 
-    if (data) {
       status = 1
       result = data
       message = "Login successed"
-    }
   }).catch(error => {
     message = error.message
   })
@@ -130,12 +125,10 @@ async function createJob(data) {
     expire_at: formatDate(moment(currentDateTime()).add(JOB_AVAILABLE_DAY, "d")),
     ...data
   }
-  await Job.create(insertData).then(data => {   
-    if (data) {
+  await Job.create(insertData).then(data => {    
       status = 1
       result = data.dataValues
       message = "Add new job completed"
-    }
   }).catch(error => {
     message = error.message
   })
@@ -155,10 +148,8 @@ async function updateJobByID(id, data) {
     }
   }
   await Job.update(updateData, { where: conditions }).then(data => {
-    if (data) {
       status = 1
       message = `Update job#${id} successed`
-    }
   }).catch(error => {
     message = error.message
   })

@@ -1,19 +1,18 @@
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('SalaryType', {
-    salary_type_id: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false
     },
-    salary_type_name: {
+    name: {
       type: DataTypes.STRING(50),
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'salary_type',
+    tableName: 'salarytype',
     modelName: 'SalaryType',
-    timestamps: false,
-    indexes: [{ unique: true, fields: [ 'salary_type_id' ] }]
+    timestamps: false
   });
 }

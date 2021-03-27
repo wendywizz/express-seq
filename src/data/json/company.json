@@ -1,0 +1,20 @@
+[
+  {
+    "company_id": "42",
+    "company_name": "R&B Research Lab Consult",
+    "logo_path": "https://mpng.subpng.com/20180619/jrr/kisspng-logo-graphic-design-construction-company-logo-design-5b29a6e9bfe492.166743021529456361786.jpg",
+    "about": "มีหลักฐานที่เป็นข้อเท็จจริงยืนยันมานานแล้ว ว่าเนื้อหาที่อ่านรู้เรื่องนั้นจะไปกวนสมาธิของคนอ่านให้เขวไปจากส่วนที้เป็น Layout เรานำ Lorem Ipsum มาใช้เพราะความที่มันมีการกระจายของตัวอักษรธรรมดาๆ",
+    "address": "15 ถนนพัฒนาซอฟแวร์​",
+    "province": "70",
+    "district": "928",
+    "postcode": "90110",
+    "region": "6",
+    "country": "66",
+    "phone": "074-222665",
+    "email": "rbrcon@webmail.com",
+    "website": "http://www.rbrcon.com/",
+    "facebook": "http://www.facebook.com/rbrcon/",
+    "created_at": "2021-03-20 19:30:23",
+    "created_by": "32"
+  }
+]

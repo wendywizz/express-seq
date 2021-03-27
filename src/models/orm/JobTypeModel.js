@@ -1,19 +1,18 @@
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define("JobType", {
-    job_type_id: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
     },
-    job_type_name: {
+    name: {
       type: DataTypes.STRING(50),
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: "job_type",
+    tableName: "jobtype",
     modelName: "JobType",
-    timestamps: false,
-    indexes: [{ unique: true, fields: ['job_type_id'] }]
+    timestamps: false
   })
 }

@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('Company', {
+  return sequelize.define("Company", {
     company_id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    company_about: {
+    about: {
       type: DataTypes.TEXT,
       allowNull: true
     },
@@ -23,17 +23,36 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    sub_area: {
+    province: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: "Province",
+        key: "id",
+        as: "province"
+      }
     },
-    area: {
+    district: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: "District",
+        key: "id",
+        as: "district"
+      }
     },
     postcode: {
       type: DataTypes.STRING(10),
       allowNull: true
+    },
+    region: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "Region",
+        key: "id",
+        as: "region"
+      }
     },
     country: {
       type: DataTypes.INTEGER,
@@ -67,17 +86,17 @@ module.exports = function(sequelize, DataTypes) {
     created_by: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      /*references: {
-        model: 'User',
-        key: 'user_id',
-        as: 'created_by'
-      }*/
+      references: {
+        model: "User",
+        key: "user_id",
+        as: "created_by"
+      }
     }
   }, {
     sequelize,
-    tableName: 'company',
-    modelName: 'Company',
+    tableName: "company",
+    modelName: "Company",
     timestamps: false,
-    indexes: [{ unique: true, fields: ['company_id', 'company_name'] }]
+    indexes: [{ unique: true, fields: ["company_id", "company_name"] }]
   })
 }

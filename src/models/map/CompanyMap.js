@@ -14,12 +14,10 @@ async function getCompany(conditions=null, length=DISPLAY_LENGTH, start=DISPLAY_
       ["created_at", "DESC"]
     ]
   }).then(data => {
-    if (data) {
       status = 1
       result = data
       message = `Data has been found ${data.length} records`
       itemCount = data.length
-    }
   }).catch(error => {
     message = error.message
   })

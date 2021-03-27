@@ -16,15 +16,5 @@ module.exports = function(sequelize, DataTypes) {
     modelName: 'Region',
     tableName: 'region',
     timestamps: false,
-    indexes: [
-      {
-        name: 'PRIMARY',
-        unique: true,
-        using: 'BTREE',
-        fields: [
-          { name: 'id' },
-        ]
-      },
-    ]
   });
 };

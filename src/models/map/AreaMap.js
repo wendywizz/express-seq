@@ -11,11 +11,9 @@ async function getProvince() {
       ["name_en", "ASC"]
     ]
   }).then(data => {
-    if (data) {
-      status = 1
-      result = data
-      message = `Data has been found ${data.length} records`
-    }
+    status = 1
+    result = data
+    message = `Data has been found ${data.length} records`
   }).catch(error => {
     message = error.message
   })
@@ -38,11 +36,9 @@ async function getDistrictByProvince(id) {
       ["name_en", "ASC"]
     ]
   }).then(data => {
-    if (data) {
-      status = 1
-      result = data
-      message = `Data has been found ${data.length} records`
-    }
+    status = 1
+    result = data
+    message = `Data has been found ${data.length} records`
   }).catch(error => {
     message = error.message
   })
