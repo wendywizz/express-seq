@@ -90,7 +90,7 @@ module.exports = function(sequelize, DataTypes) {
         as: "region"
       }
     },
-    require: {
+    amount: {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 0

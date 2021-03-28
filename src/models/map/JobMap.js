@@ -1,4 +1,4 @@
-const { local, Job, JobType } = require("../orm")
+const { local, Job, JobType, SalaryType, Province, District, Region } = require("../orm")
 const { Op, QueryTypes } = require("sequelize")
 const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
@@ -6,28 +6,48 @@ const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
 const JOB_AVAILABLE_DAY = 90
 
 async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLAY_START) {
-  let status = 0, result = [], message = "Data not found"
-  
+  let status = 0, data = [], itemCount = 0, message = "Data not found"
+
   await Job.findAll({
     where: conditions,
     limit: length,
     offset: start,
     order: [
       ["created_at", "DESC"]
+    ],
+    include: [
+      { model: JobType, as: "job_type_asso" },
+      { model: SalaryType, as: "salary_type_asso" },
+      {
+        model: Province,
+        as: "province_asso",
+        attributes: ["id", ["name_th", "name"]]
+      },
+      {
+        model: District,
+        as: "district_asso",
+        attributes: ["id", ["name_th", "name"]]
+      },
+      {
+        model: Region,
+        as: "region_asso",
+        attributes: ["id", "name"]
+      }
     ]
-  }).then(data => {
-    status = 1    
-    result = data
-    message = `Data has been found ${data.length} records`    
+  }).then(result => {
+    status = 1
+    data = result
+    itemCount = data.length
+    message = `Data has been found ${data.length} records`
   }).catch(error => {
     message = error.message
   })
 
-  return { status, result, message }
+  return { status, data, itemCount, message }
 }
 
-async function searchJob(params, length=DISPLAY_LENGTH, start=DISPLAY_START) {
-  let status = 0, result = [], message = "Data not found"
+async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START) {
+  let status = 0, data = [], message = "Data not found"
   let sqlCommand = `
     SELECT 
       t.job_position, t.job_type, t.job_duty, t.job_performance, t.job_welfare, t.salary_min, t.salary_max,
@@ -75,17 +95,17 @@ async function searchJob(params, length=DISPLAY_LENGTH, start=DISPLAY_START) {
 
   await local
     .query(sqlCommand, { raw: true, type: QueryTypes.SELECT })
-    .then(data => {
-        status = 1,
-        result = data
-        message = `Data found ${data.length} records`
+    .then(result => {
+      status = 1,
+        data = result
+      message = `Data found ${data.length} records`
     })
-  
-  return { status, result, message }
+
+  return { status, data, message }
 }
 
 async function getJobByID(id) {
-  let status = 0, result = null, message = "Data not found"
+  let status = 0, data = null, message = "Data not found"
   const conditions = {
     job_id: {
       [Op.eq]: id
@@ -94,46 +114,85 @@ async function getJobByID(id) {
       [Op.eq]: 0
     }
   }
-  await Job.findOne({ where: conditions }).then(data => { 
-      status = 1
-      result = data
-      message = "Login successed"
+  await Job.findOne({
+    where: conditions,
+    include: [
+      { model: JobType, as: "job_type_asso" },
+      { model: SalaryType, as: "salary_type_asso" },
+      {
+        model: Province,
+        as: "province_asso",
+        attributes: ["id", ["name_th", "name"]]
+      },
+      {
+        model: District,
+        as: "district_asso",
+        attributes: ["id", ["name_th", "name"]]
+      },
+      {
+        model: Region,
+        as: "region_asso",
+        attributes: ["id", "name"]
+      }
+    ]
+  }).then(result => {
+    status = 1
+    data = result
+    message = `Data id#${id} found`
   }).catch(error => {
     message = error.message
   })
 
-  return { status, result, message }
+  return { status, data, message }
+}
+
+async function getJobOfCompany(id, length = DISPLAY_LENGTH, start = DISPLAY_START) {
+  const conditions = {
+    company_owner: {
+      [Op.eq]: id
+    },
+    deleted: {
+      [Op.eq]: 0
+    }
+  }
+  const { status, data, itemCount, message } = await getJob(conditions, length, start)
+
+  return { status, data, itemCount, message }
 }
 
 async function getJobType() {
-  let status = 0, result = [], message = "No data found"
-  await JobType.findAll().then(data => {
-    status = 1
-    result = data
-    message = `There are data ${data.length} found`
-  }).catch(error => {
-    message = error.message
-  })
+  let status = 0, data = [], itemCount = 0, message = "No data found"
 
-  return { status, result, message }
+  await JobType.findAll()
+    .then(result => {
+      status = 1
+      data = result
+      itemCount = data.length
+      message = `There are data ${data.length} found`
+    }).catch(error => {
+      message = error.message
+    })
+
+  return { status, data, itemCount, message }
 }
 
-async function createJob(data) {
-  let status = 0, result = null, message = "Add new job failed"
-  const insertData = {
+async function createJob(insertData) {
+  let status = 0, data = null, message = "Add new job failed"
+  const newData = {
     created_at: currentDateTime(),
     expire_at: formatDate(moment(currentDateTime()).add(JOB_AVAILABLE_DAY, "d")),
-    ...data
+    ...insertData
   }
-  await Job.create(insertData).then(data => {    
+  await Job.create(newData)
+    .then(result => {
       status = 1
-      result = data.dataValues
+      data = result.dataValues
       message = "Add new job completed"
-  }).catch(error => {
-    message = error.message
-  })
+    }).catch(error => {
+      message = error.message
+    })
 
-  return { status, result, message }
+  return { status, data, message }
 }
 
 async function updateJobByID(id, data) {
@@ -147,12 +206,13 @@ async function updateJobByID(id, data) {
       [Op.eq]: id
     }
   }
-  await Job.update(updateData, { where: conditions }).then(data => {
+  await Job.update(updateData, { where: conditions })
+    .then(() => {
       status = 1
       message = `Update job#${id} successed`
-  }).catch(error => {
-    message = error.message
-  })
+    }).catch(error => {
+      message = error.message
+    })
 
   return { status, message }
 }
@@ -169,12 +229,13 @@ async function deleteJobByID(id) {
       [Op.eq]: id
     }
   }
-  await Job.update(updateFields, { where: conditions }).then(() => {
-    status = 1
-    message = `Remove job#${id} successed`
-  }).catch(error => {
-    message = error.message
-  })
+  await Job.update(updateFields, { where: conditions })
+    .then(() => {
+      status = 1
+      message = `Remove job#${id} successed`
+    }).catch(error => {
+      message = error.message
+    })
 
   return { status, message }
 }
@@ -184,6 +245,7 @@ module.exports = {
   getJobByID,
   getJob,
   getJobType,
+  getJobOfCompany,
   createJob,
   updateJobByID,
   deleteJobByID

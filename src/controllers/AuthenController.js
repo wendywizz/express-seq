@@ -3,23 +3,23 @@ const { credential, verifyToken } = require("../models/OAuth2")
 
 async function signInByEmail(req, res) {
   const { email, password } = req.body
-  const { status, result, message } = await UserMap.signInByEmail(email, password)
+  const { status, data, message } = await UserMap.signInByEmail(email, password)
   let accessToken = null
 
   if (status) {
-    const userType = result.type
+    const userType = data.type
     const { access_token } = await credential(userType);
     accessToken = access_token
   }
   
-  res.send({ status, accessToken, message, result })
+  res.send({ status, accessToken, message, data })
 }
 
 async function checkSession(req, res) {
   const { access_token } = req.query
-  const result = await verifyToken(access_token)
+  const data = await verifyToken(access_token)
 
-  res.send({result})
+  res.send({data})
 }
 
 module.exports = {

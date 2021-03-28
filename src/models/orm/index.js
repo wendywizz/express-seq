@@ -33,7 +33,37 @@ orm.User = require('./UserModel.js')(local, Sequelize)
 orm.Company = require('./CompanyModel')(local, Sequelize)
 orm.JobType = require('./JobTypeModel')(local, Sequelize)
 orm.SalaryType = require('./SalaryTypeModel')(local, Sequelize)
+
+/* Job Model */
 orm.Job = require('./JobModel')(local, Sequelize)
+orm.Job.belongsTo(orm.JobType, { 
+  as: "job_type_asso", 
+  foreignKey: "job_type" 
+})
+orm.Job.belongsTo(orm.SalaryType, {
+  as: "salary_type_asso",
+  foreignKey: "salary_type"
+})
+orm.Job.belongsTo(orm.User, {
+  as: "created_by_asso",
+  foreignKey: "created_by"
+})
+orm.Job.belongsTo(orm.Company, {
+  as: "company_owner_asso",
+  foreignKey: "company_owner"
+})
+orm.Job.belongsTo(orm.Province, {
+  as: "province_asso",
+  foreignKey: "province"
+})
+orm.Job.belongsTo(orm.District, {
+  as: "district_asso",
+  foreignKey: "district"
+})
+orm.Job.belongsTo(orm.Region, {
+  as: "region_asso",
+  foreignKey: "region"
+})
 
 // Ploylora
 orm.ploylora = ploylora

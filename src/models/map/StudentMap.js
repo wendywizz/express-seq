@@ -2,6 +2,7 @@ const { RStudent } = require("../orm")
 const { Op } = require("sequelize")
 
 async function identifyStudent(studentCode, cardNo) {
+  let status = 0, message = "Student data not found"
   const conditions = {
     CARD_ID: {
       [Op.eq]: cardNo
@@ -10,24 +11,18 @@ async function identifyStudent(studentCode, cardNo) {
       [Op.eq]: studentCode
     }
   };
-  return await RStudent.count({ where: conditions }).then(rowCount => {
-    if (rowCount > 0) {
-      return {
-        status: 1,
-        message: `Student code#${studentCode} is available`
-      };
-    } else {
-      return {
-        status: 0,
-        message: `Student data not found`
+  await RStudent.count({ where: conditions })
+    .then(rowCount => {
+      if (rowCount > 0) {
+        status = 1
+        message = `Student code#${studentCode} is available`
       }
-    }
-  }).catch(error => {
-    return {
-      status: 0,
-      message: error.message
-    }
-  })
+    })
+    .catch(error => {
+      message = error.message
+    })
+
+  return { status, message }
 }
 module.exports = {
   identifyStudent

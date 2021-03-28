@@ -2,9 +2,9 @@ const { JobMap } = require("../models/map")
 
 async function view(req, res) {
   const { id } = req.query
-  const { status, result, message } = await JobMap.getJobByID(id)
+  const { status, data, message } = await JobMap.getJobByID(id)
 
-  res.send({ status, result, message })
+  res.send({ status, data, message })
 }
 
 async function search(req, res) {
@@ -19,20 +19,27 @@ async function search(req, res) {
     district: did,
     region: rid
   }
-  const { status, result, message } = await JobMap.searchJob(params)
+  const { status, data, message } = await JobMap.searchJob(params)
 
-  res.send({ status, result, message, itemCount: result.length })
+  res.send({ status, data, message, itemCount: data.length })
 }
 
 async function getJobType(req, res) {
-  const { status, result, message } = await JobMap.getJobType()
+  const { status, data, itemCount, message } = await JobMap.getJobType()
 
-  res.send({ status, result, message })
+  res.send({ status, data, itemCount, message })
+}
+
+async function getJobOfCompany(req, res) {
+  const { id } = req.body
+  const { status, data, itemCount, message } = await JobMap.getJobOfCompany(id)
+
+  res.send({ status, data, itemCount, message })
 }
 
 async function add(req, res) {  
   const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, require, cid, uid } = req.body  
-  const data = {
+  const newData = {
     job_position: position,
     job_type: job_type,
     job_duty: duty,
@@ -51,9 +58,9 @@ async function add(req, res) {
     company_owner: cid,
     created_by: uid
   }
-  const { status, result, message } = await JobMap.createJob(data)
+  const { status, data, message } = await JobMap.createJob(newData)
 
-  res.send({ status, result, message })
+  res.send({ status, data, message })
 }
 
 async function save(req, res) {
@@ -91,6 +98,7 @@ module.exports = {
   view,
   search,
   getJobType,
+  getJobOfCompany,
   add,
   save,
   remove

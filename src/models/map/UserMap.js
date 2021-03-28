@@ -2,6 +2,7 @@ const orm = require("../orm");
 const { Op } = require("sequelize");
 
 async function signInByEmail(email, password) {
+  let status = 0, data = null, message = "Login failed"
   const conditions = {
     email: {
       [Op.eq]: email
@@ -13,80 +14,69 @@ async function signInByEmail(email, password) {
       [Op.eq]: true
     }
   }
-  return await orm.User.findOne({where: conditions}).then(data => {
-    let status = 0, result = null, message = "Login failed"
-    if (data) {
-      status = 1
-      result = {
-        id: data.user_id,
-        student_code: data.student_code,
-        type: data.user_type
+  await orm.User.findOne({ where: conditions })
+    .then(row => {
+      if (row) {
+        status = 1
+        data = {
+          id: row.user_id,
+          student_code: row.student_code,
+          type: row.user_type
+        }
+        message = "Login successed"
       }
-      message = "Login successed"
-    }
-    return { status, result ,message}
-  }).catch(error => {
-    return {
-      status: 0,
-      result: null,
-      message: error.message
-    }
-  })
+    })
+    .catch(error => {
+      message = error.message
+    })
+
+  return { status, data, message }
 }
 
 async function checkIfStudentRegistered(studentCode) {
+  let status = 0, message = `User code#${studentCode} is not register`
+
   const conditions = {
     student_code: {
       [Op.eq]: studentCode
     }
   };
-  return await orm.User.count({ where: conditions }).then(rowCount => {
-    if (rowCount > 0) {
-      return {
-        status: 1,
-        message: `User code#${studentCode} registered`
+  await orm.User.count({ where: conditions })
+    .then(rowCount => {
+      if (rowCount > 0) {
+        status = 1
+        message = `User code#${studentCode} registered`
       }
-    } else {
-      return {
-        status: 0,
-        message: `User code#${studentCode} is not register`
-      }
-    }
-  }).catch(error => {
-    return {
-      status: 0,
-      message: error.message
-    };
-  });
+    })
+    .catch(error => {
+      message = error.message
+    });
+
+  return { status, message }
 }
 
 async function checkIfEmailExist(email) {
+  let status = 0, message = `Email ${email} not found`
   const conditions = {
     email: {
       [Op.eq]: email
     }
   }
-  return await orm.User.count({ where: conditions }).then(rowCount => {
-    if (rowCount > 0) {
-      return {
-        status: 1,
-        message: `Email ${email} is already registrated`
+  await orm.User.count({ where: conditions })
+    .then(rowCount => {
+      if (rowCount > 0) {
+        status = 1,
+          message = `Email ${email} is already registrated`
       }
-    } else {
-      return {
-        status: 0,
-        message: `Email ${email} not found`
-      }
-    }
-  }).catch(error => {
-    return {
-      status: 0,
-      message: error.message
-    }
-  })
+    })
+    .catch(error => {
+      message = error.message
+    })
+
+  return { status, message }
 }
 
-async function registerApplicantWithEmail(data) {  
+async function registerApplicantWithEmail(data) {
   const studentCode = data.student_code
   const email = data.email
   let resp = null
@@ -94,41 +84,43 @@ async function registerApplicantWithEmail(data) {
   // Check if student code registrated
   resp = await checkIfStudentRegistered(studentCode)
   if (resp.status) {
-    return { 
-      status: 0, 
-      message: resp.message 
+    return {
+      status: 0,
+      message: resp.message
     }
   }
   // Check duplicate email
   resp = await checkIfEmailExist(email)
   if (resp.status) {
-    return { 
-      status: 0, 
-      message: resp.message 
+    return {
+      status: 0,
+      message: resp.message
     }
   }
-  
+
   if (!resp.status) {
     // Create New User
-    return await orm.User.create(data).then(() => {
-      return {
-        status: 1,
-        message: "Registration is complete"
-      }
-    }).catch(error => {
-      return {
-        status: 0,
-        message: error.message
-      }
-    })
+    return await orm.User.create(data)
+      .then(() => {
+        return {
+          status: 1,
+          message: "Registration is complete"
+        }
+      })
+      .catch(error => {
+        return {
+          status: 0,
+          message: error.message
+        }
+      })
   }
 }
 
 async function activateUserByID(id) {
-  return orm.User.update({ 
-    active: true 
-  }, { 
-    where: { user_id: id } 
+  return orm.User.update({
+    active: true
+  }, {
+    where: { user_id: id }
   }).then(() => {
     return {
       status: 1,
