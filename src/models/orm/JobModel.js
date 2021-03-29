@@ -53,7 +53,7 @@ module.exports = function(sequelize, DataTypes) {
     work_days: {
       type: DataTypes.STRING(100),
       allowNull: true,
-      defaultValue: "{mon:0,tue:0,wed:0,thu:0,fri:0,sat:0,sun:0}"
+      defaultValue: '{"mon":0,"tue":0,"wed":0,"thu":0,"fri":0,"sat":0,"sun":0}'
     },
     work_time_start: {
       type: DataTypes.STRING(5),
