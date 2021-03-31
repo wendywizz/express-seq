@@ -30,6 +30,12 @@ async function getJobType(req, res) {
   res.send({ status, data, itemCount, message })
 }
 
+async function getSalaryType(req, res) {
+  const { status, data, itemCount, message } = await JobMap.getSalaryType()
+
+  res.send({ status, data, itemCount, message })
+}
+
 async function getJobOfCompany(req, res) {
   const { id } = req.body
   const { status, data, itemCount, message } = await JobMap.getJobOfCompany(id)
@@ -38,7 +44,7 @@ async function getJobOfCompany(req, res) {
 }
 
 async function add(req, res) {  
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, require, cid, uid } = req.body  
+  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, amount, cid, uid } = req.body  
   const newData = {
     job_position: position,
     job_type: job_type,
@@ -54,7 +60,7 @@ async function add(req, res) {
     district: area_did,
     province: area_pid,    
     region: area_rid,
-    require: require,
+    amount: amount,
     company_owner: cid,
     created_by: uid
   }
@@ -64,7 +70,7 @@ async function add(req, res) {
 }
 
 async function save(req, res) {
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, sub_area, area, country, require, id } = req.body
+  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, sub_area, area, country, amount, id } = req.body
   const data = {
     job_position: position,
     job_type: job_type,
@@ -80,7 +86,7 @@ async function save(req, res) {
     sub_area: sub_area,
     area: area,
     country: country,
-    require: require,
+    amount: amount,
   }
   const { status, message } = await JobMap.updateJobByID(id, data)
 
@@ -98,6 +104,7 @@ module.exports = {
   view,
   search,
   getJobType,
+  getSalaryType,
   getJobOfCompany,
   add,
   save,

@@ -7,7 +7,8 @@ module.exports = (app) => {
   router.post("/company", jobCtrl.getJobOfCompany)
   
   /* Need authentication */  
-  router.get("/gettype", jobCtrl.getJobType)
+  router.get("/job-type", jobCtrl.getJobType)
+  router.get("/salary-type", jobCtrl.getSalaryType)
   router.post("/add", jobCtrl.add)
   router.post("/save", jobCtrl.save)
   router.post("/remove", jobCtrl.remove)
