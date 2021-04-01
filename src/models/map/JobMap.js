@@ -219,7 +219,7 @@ async function createJob(insertData) {
 }
 
 async function updateJobByID(id, data) {
-  let status = 0, message = `Update job#${id} failed`, error = null
+  let status = 0, returnData = null, message = `Update job#${id} failed`, error = null
   const updateData = {
     updated_at: currentDateTime(),
     ...data
@@ -230,14 +230,16 @@ async function updateJobByID(id, data) {
     }
   }
   await Job.update(updateData, { where: conditions })
-    .then(() => {
+    .then(async () => {
+      const { data } = await getJobByID(id)
+      returnData = data
       status = 1
       message = `Update job#${id} successed`
-    }).catch(err => {
+    }).catch(err => {    
       error = err.message
     })
 
-  return { status, message, error }
+  return { status, data: returnData, message, error }
 }
 
 async function deleteJobByID(id) {

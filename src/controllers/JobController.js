@@ -64,14 +64,15 @@ async function add(req, res) {
     company_owner: cid,
     created_by: uid
   }
-  const { status, data, message } = await JobMap.createJob(newData)
+  const { status, data, message, error } = await JobMap.createJob(newData)
 
-  res.send({ status, data, message })
+  res.send({ status, data, message, error })
 }
 
 async function save(req, res) {
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, sub_area, area, country, amount, id } = req.body
-  const data = {
+  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, amount, id } = req.body
+  
+  const updateData = {
     job_position: position,
     job_type: job_type,
     job_duty: duty,
@@ -83,14 +84,14 @@ async function save(req, res) {
     work_days: work_days,
     work_time_start: work_timestart,
     work_time_end: work_timeend,
-    sub_area: sub_area,
-    area: area,
-    country: country,
+    district: area_did,
+    province: area_pid,
+    region: area_rid,
     amount: amount,
   }
-  const { status, message } = await JobMap.updateJobByID(id, data)
+  const { status, data, message, error } = await JobMap.updateJobByID(id, updateData)
 
-  res.send({ status, message })
+  res.send({ status, data, message, error })
 }
 
 async function remove(req, res) {
