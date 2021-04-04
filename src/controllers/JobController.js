@@ -8,16 +8,16 @@ async function view(req, res) {
 }
 
 async function search(req, res) {
-  const { keyword, jtid, stid, s_min, s_max, pid, did, rid } = req.query
+  const { keyword, job_type, salary_type, salary_min, salary_max, province, district, region } = req.query
   const params = {
     keyword,
-    job_type: jtid,
-    salary_type: stid,
-    salary_min: s_min,
-    salary_max: s_max,
-    province: pid,
-    district: did,
-    region: rid
+    job_type,
+    salary_type,
+    salary_min,
+    salary_max,
+    province,
+    district,
+    region
   }
   const { status, data, message } = await JobMap.searchJob(params)
 
@@ -44,7 +44,7 @@ async function getJobOfCompany(req, res) {
 }
 
 async function add(req, res) {  
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, amount, cid, uid } = req.body  
+  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, district, province, region, amount, company_owner, created_by } = req.body  
   const newData = {
     job_position: position,
     job_type: job_type,
@@ -57,12 +57,12 @@ async function add(req, res) {
     work_days: work_days,
     work_time_start: work_timestart,
     work_time_end: work_timeend,
-    district: area_did,
-    province: area_pid,    
-    region: area_rid,
+    district: district,
+    province: province,    
+    region: region,
     amount: amount,
-    company_owner: cid,
-    created_by: uid
+    company_owner: company_owner,
+    created_by: created_by
   }
   const { status, data, message, error } = await JobMap.createJob(newData)
 
@@ -70,7 +70,7 @@ async function add(req, res) {
 }
 
 async function save(req, res) {
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, area_did, area_pid, area_rid, amount, id } = req.body
+  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, district, province, region, amount, id } = req.body
   
   const updateData = {
     job_position: position,
@@ -84,9 +84,9 @@ async function save(req, res) {
     work_days: work_days,
     work_time_start: work_timestart,
     work_time_end: work_timeend,
-    district: area_did,
-    province: area_pid,
-    region: area_rid,
+    district: district,
+    province: province,
+    region: region,
     amount: amount,
   }
   const { status, data, message, error } = await JobMap.updateJobByID(id, updateData)

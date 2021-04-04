@@ -3,8 +3,8 @@ module.exports = (app) => {
   const companyCtrl = require("../controllers/CompanyController")
   
   /* Need authentication */    
-  router.post("/info", companyCtrl.getInfo)
-  router.post("/save", companyCtrl.save)
+  router.get("/info-owner", companyCtrl.getInfoByOwner)
+  router.post("/save-owner", companyCtrl.saveByOwner)
 
   app.use("/api/company", router)
 }

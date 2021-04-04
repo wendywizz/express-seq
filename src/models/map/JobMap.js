@@ -232,6 +232,7 @@ async function updateJobByID(id, data) {
   await Job.update(updateData, { where: conditions })
     .then(async () => {
       const { data } = await getJobByID(id)
+      
       returnData = data
       status = 1
       message = `Update job#${id} successed`

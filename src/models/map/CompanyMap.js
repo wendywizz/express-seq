@@ -26,36 +26,77 @@ async function getCompany(conditions=null, length=DISPLAY_LENGTH, start=DISPLAY_
 
 async function getCompanyByOwner(id) {
   const conditions = {
-    company_owner: {
+    created_by: {
       [Op.eq]: id
     }
   }
-  const { status, data, itemCount, message } = await getCompany(conditions, length, start)
+  const { status, data, itemCount } = await getCompany(conditions)
 
-  let row = null
+  let row = null, message = "Data not found"
   if (data.length > 0) {
     row = data[0]
+    message = "Data found"
   }
   return { status, data: row, itemCount, message }
 }
 
-async function save(id, saveData) {
-  const { itemCount } = await getCompanyByOwner(id)
-  let status = 0, message = "Save failed"
+async function saveByOwner(ownerId, data) {
+  const { itemCount } = await getCompanyByOwner(ownerId)
 
   if (itemCount > 0) {
-    // Insert new data
+    return updateJobByOwner(ownerId, data)
   } else {
-    // Update data
-    const insertData = {
-      created_at: currentDateTime(),
-      ...saveData
+    return createCompany(ownerId, data)
+  }
+}
+
+async function createCompany(ownerId, insertData) {
+  let status = 0, data = null, message = "Add new company failed", error = null
+  const newData = {
+    created_at: currentDateTime(),
+    created_by: ownerId,
+    ...insertData
+  }
+  
+  await Company.create(newData)
+    .then(result => {
+      status = 1
+      data = result.dataValues
+      message = "Add new company completed"
+    })
+    .catch(err => {
+      error = err.message
+    })
+
+  return { status, data, message, error }
+}
+
+async function updateJobByOwner(ownerId, data) {
+  let status = 0, returnData = null, message = `Update company#${ownerId} failed`, error = null
+  const updateData = {
+    updated_at: currentDateTime(),
+    ...data
+  }
+  const conditions = {
+    created_by: {
+      [Op.eq]: ownerId
     }
   }
+  await Company.update(updateData, { where: conditions })
+    .then(async () => {
+      const { data } = await getCompanyByOwner(ownerId)
+      returnData = data
+      status = 1
+      message = `Update company#${ownerId} successed`
+    }).catch(err => {    
+      error = err.message
+    })
+
+  return { status, data: returnData, message, error }
 }
 
 module.exports = {
   getCompany,
   getCompanyByOwner,
-  save
+  saveByOwner
 }
