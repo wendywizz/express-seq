@@ -2,7 +2,7 @@ const { Province, District } = require("../orm")
 const { Op } = require("sequelize")
 
 async function getProvince() {
-  let status = 0, data = [], itemCount = 0, message = "Data not found"
+  let success = false, data = [], itemCount = 0, message = "Data not found", error = null
 
   await Province.findAll({
     attributes: ["id", "code", "name_th", "name_en"],
@@ -11,19 +11,19 @@ async function getProvince() {
       ["name_en", "ASC"]
     ]
   }).then(result => {
-    status = 1
+    success = true
     data = result
     message = `Data has been found ${data.length} records`
     itemCount = data.length
-  }).catch(error => {
-    message = error.message
+  }).catch(e => {
+    error = e.message
   })
 
-  return { status, data, itemCount, message }
+  return { success, data, itemCount, message, error }
 }
 
 async function getDistrictByProvince(id) {
-  let status = 0, data = [], itemCount = 0, message = "Data not found"
+  let success = false, data = [], itemCount = 0, message = "Data not found", error = null
 
   await District.findAll({
     attributes: ["id", "code", "name_th", "name_en"],
@@ -37,15 +37,15 @@ async function getDistrictByProvince(id) {
       ["name_en", "ASC"]
     ]
   }).then(result => {
-    status = 1
+    success = true
     data = result
     message = `Data has been found ${data.length} records`
     itemCount = data.length
-  }).catch(error => {
-    message = error.message
+  }).catch(e => {
+    error = e.message
   })
 
-  return { status, data, itemCount, message }
+  return { success, data, itemCount, message, error }
 }
 
 module.exports = {

@@ -138,6 +138,6 @@ module.exports = function(sequelize, DataTypes) {
     tableName: "job",
     modelName: "Job",
     timestamps: false,
-    indexes: [{ unique: true, fields: ["job_id","job_position"] }]
+    indexes: [{ unique: true, fields: ["job_id", "job_position"] }]
   })
 }

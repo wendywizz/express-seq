@@ -18,7 +18,7 @@ async function registerApplicantWithEmail(req, res) {
     email: body.email,
     password: body.password,
     student_code: body.student_code,
-    person_id: body.person_id,
+    person_no: body.person_no,
     created_at: dateTime.currentDateTime()
   }
 

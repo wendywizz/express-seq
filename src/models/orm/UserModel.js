@@ -4,7 +4,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BIGINT,
       primaryKey: true,
       autoIncrement: true,
-      allowNull: false
+      allowNull: false,
+    },
+    user_code: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
     },
     user_type: {
       type: DataTypes.INTEGER,
@@ -15,15 +19,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(250),
       allowNull: true
     },
-    password: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
     student_code: {
       type: DataTypes.STRING(15),
       allowNull: true
     },
-    person_id: {
+    person_no: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
@@ -64,6 +64,6 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'user',
     modelName: 'User',
     timestamps: false,
-    indexes: [{ unique: true, fields: ['user_id'] }]
+    indexes: [{ unique: true, fields: ['user_id', 'user_code'] }]
   })
 }

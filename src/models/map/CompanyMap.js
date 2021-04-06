@@ -3,8 +3,9 @@ const { Op } = require("sequelize")
 const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
 const { currentDateTime } = require("../../utils/DateTime")
 
-async function getCompany(conditions=null, length=DISPLAY_LENGTH, start=DISPLAY_START) {
-  let status = 0, data = [], message = "Data not found", itemCount = 0
+async function getCompany(conditions = null, length = DISPLAY_LENGTH, start = DISPLAY_START) {
+  let success = false, data = [], message = "Data not found", itemCount = 0, error = null
+
   await Company.findAll({
     where: conditions,
     limit: length,
@@ -13,15 +14,15 @@ async function getCompany(conditions=null, length=DISPLAY_LENGTH, start=DISPLAY_
       ["created_at", "DESC"]
     ]
   }).then(result => {
-      status = 1
-      data = result
-      message = `Data has been found ${data.length} records`
-      itemCount = data.length
-  }).catch(error => {
-    message = error.message
+    success = true
+    data = result
+    message = `Data has been found ${data.length} records`
+    itemCount = data.length
+  }).catch(e => {
+    error = e.message
   })
 
-  return { status, data, itemCount, message }
+  return { success, data, itemCount, message, error }
 }
 
 async function getCompanyByOwner(id) {
@@ -30,14 +31,14 @@ async function getCompanyByOwner(id) {
       [Op.eq]: id
     }
   }
-  const { status, data, itemCount } = await getCompany(conditions)
+  const { success, data, itemCount, error } = await getCompany(conditions)
 
-  let row = null, message = "Data not found"
+  let row = null, message = `Data id#${id} not found`
   if (data.length > 0) {
     row = data[0]
-    message = "Data found"
+    message = `Data id#${id} found`
   }
-  return { status, data: row, itemCount, message }
+  return { success, data: row, itemCount, message, error }
 }
 
 async function saveByOwner(ownerId, data) {
@@ -51,28 +52,28 @@ async function saveByOwner(ownerId, data) {
 }
 
 async function createCompany(ownerId, insertData) {
-  let status = 0, data = null, message = "Add new company failed", error = null
+  let success = false, data = null, message = "Add new company failed", error = null
   const newData = {
     created_at: currentDateTime(),
     created_by: ownerId,
     ...insertData
   }
-  
+
   await Company.create(newData)
     .then(result => {
-      status = 1
+      success = true
       data = result.dataValues
       message = "Add new company completed"
     })
-    .catch(err => {
-      error = err.message
+    .catch(e => {
+      error = e.message
     })
 
-  return { status, data, message, error }
+  return { success, data, message, error }
 }
 
 async function updateJobByOwner(ownerId, data) {
-  let status = 0, returnData = null, message = `Update company#${ownerId} failed`, error = null
+  let success = false, returnData = null, message = `Update company#${ownerId} failed`, error = null
   const updateData = {
     updated_at: currentDateTime(),
     ...data
@@ -86,13 +87,14 @@ async function updateJobByOwner(ownerId, data) {
     .then(async () => {
       const { data } = await getCompanyByOwner(ownerId)
       returnData = data
-      status = 1
+      success = true
       message = `Update company#${ownerId} successed`
-    }).catch(err => {    
-      error = err.message
+    })
+    .catch(e => {
+      error = e.message
     })
 
-  return { status, data: returnData, message, error }
+  return { success, data: returnData, message, error }
 }
 
 module.exports = {
