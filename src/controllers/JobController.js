@@ -2,9 +2,9 @@ const { JobMap } = require("../models/map")
 
 async function view(req, res) {
   const { id } = req.query
-  const { status, data, message } = await JobMap.getJobByID(id)
+  const { success, data, message, error } = await JobMap.getJobByID(id)
 
-  res.send({ status, data, message })
+  res.send({ success, data, message, error })
 }
 
 async function search(req, res) {
@@ -19,28 +19,28 @@ async function search(req, res) {
     district,
     region
   }
-  const { status, data, message } = await JobMap.searchJob(params)
+  const { success, data, message, error } = await JobMap.searchJob(params)
 
-  res.send({ status, data, message, itemCount: data.length })
+  res.send({ success, data, message, itemCount: data.length, error })
 }
 
 async function getJobType(req, res) {
-  const { status, data, itemCount, message } = await JobMap.getJobType()
+  const { success, data, itemCount, message, error } = await JobMap.getJobType()
 
-  res.send({ status, data, itemCount, message })
+  res.send({ success, data, itemCount, message, error })
 }
 
 async function getSalaryType(req, res) {
-  const { status, data, itemCount, message } = await JobMap.getSalaryType()
+  const { success, data, itemCount, message, error } = await JobMap.getSalaryType()
 
-  res.send({ status, data, itemCount, message })
+  res.send({ success, data, itemCount, message, error })
 }
 
 async function getJobOfCompany(req, res) {
   const { id } = req.body
-  const { status, data, itemCount, message } = await JobMap.getJobOfCompany(id)
+  const { success, data, itemCount, message, error } = await JobMap.getJobOfCompany(id)
 
-  res.send({ status, data, itemCount, message })
+  res.send({ success, data, itemCount, message, error })
 }
 
 async function add(req, res) {  
@@ -64,9 +64,9 @@ async function add(req, res) {
     company_owner: company_owner,
     created_by: created_by
   }
-  const { status, data, message, error } = await JobMap.createJob(newData)
+  const { success, data, message, error } = await JobMap.createJob(newData)
 
-  res.send({ status, data, message, error })
+  res.send({ success, data, message, error })
 }
 
 async function save(req, res) {
@@ -89,16 +89,16 @@ async function save(req, res) {
     region: region,
     amount: amount,
   }
-  const { status, data, message, error } = await JobMap.updateJobByID(id, updateData)
+  const { success, data, message, error } = await JobMap.updateJobByID(id, updateData)
 
-  res.send({ status, data, message, error })
+  res.send({ success, data, message, error })
 }
 
 async function remove(req, res) {
   const { id } = req.body
-  const { status, message } = await JobMap.deleteJobByID(id)
+  const { success, message, error } = await JobMap.deleteJobByID(id)
 
-  res.send({ status, message })
+  res.send({ success, message, error })
 }
 
 module.exports = {

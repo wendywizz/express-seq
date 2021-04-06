@@ -17,8 +17,8 @@ app.use(function (req, res, next) {
 })
 
 // Sync Database
-const syncLocal = require("./src/models/orm").local
-syncLocal.sync({ force: true })
+/*const syncLocal = require("./src/models/orm").local
+syncLocal.sync({ force: true })*/
 
 // Add Routes
 require("./src/routes/RegisterRoute.js")(app)

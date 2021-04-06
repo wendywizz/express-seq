@@ -1,16 +1,16 @@
 const { AreaMap } = require("../models/map")
 
 async function getProvince(req, res) {
-  const { status, data, itemCount, message } = await AreaMap.getProvince()
+  const { success, data, itemCount, message, error } = await AreaMap.getProvince()
 
-  res.send({ status, data, itemCount, message })
+  res.send({ success, data, itemCount, message, error })
 }
 
 async function getDistrictByProvince(req, res) {
   const { id } = req.query
-  const { status, data, itemCount, message } = await AreaMap.getDistrictByProvince(id)
+  const { success, data, itemCount, message, error } = await AreaMap.getDistrictByProvince(id)
 
-  res.send({ status, data, itemCount, message })
+  res.send({ success, data, itemCount, message, error })
 }
 
 module.exports = {

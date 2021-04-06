@@ -1,15 +1,15 @@
 const { RStudent } = require("../orm")
 const { Op } = require("sequelize")
 
-async function identifyStudent(studentCode, cardNo) {
+async function identifyStudent(studentCode, personNo) {
   let success = false, message = "Student data not found", error = null
 
   const conditions = {
-    CARD_ID: {
-      [Op.eq]: cardNo
-    },
     STUD_ID: {
       [Op.eq]: studentCode
+    },
+    CARD_ID: {
+      [Op.eq]: personNo
     }
   };
   await RStudent.count({ where: conditions })
@@ -18,7 +18,7 @@ async function identifyStudent(studentCode, cardNo) {
         success = true
         message = `Student code#${studentCode} is available`
       } else {
-        message = `Student code#${studentcode} already registrated`
+        message = `Student code#${studentCode} already registrated`
       }
     })
     .catch(e => {

@@ -14,16 +14,16 @@ async function saveByOwner(req, res) {
     website: req.body.website,
     facebook: req.body.facebook,
   }
-console.log("SAVE", saveData)
   const { status, data, message, error } = await CompanyMap.saveByOwner(owner, saveData)
+
   res.send({ status, data, message, error })
 }
 
 async function getInfoByOwner(req, res) {
   const { owner } = req.query
 
-  const { status, data, message } = await CompanyMap.getCompanyByOwner(owner)
-  res.send({ status, data, message })
+  const { status, data, message, error } = await CompanyMap.getCompanyByOwner(owner)
+  res.send({ status, data, message, error })
 }
 
 module.exports = {  
