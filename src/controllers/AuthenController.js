@@ -7,6 +7,14 @@ async function signInByEmail(req, res) {
   res.send({ success, message, data, error })
 }
 
+async function getUserType(req, res) {
+  const { code } = req.query
+  const { success, data, message, error } = await UserMap.getUserTypeByUserCode(code)
+
+  res.send({ success, message, data, error })
+}
+
 module.exports = {
-  signInByEmail  
+  signInByEmail,
+  getUserType
 }

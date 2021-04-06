@@ -76,6 +76,28 @@ async function checkIfEmailExist(email) {
   return { success, message, error }
 }
 
+async function getUserTypeByUserCode(code) {
+  let success = false, data = null, message = `Not found`, error = null
+
+  const conditions = {
+    user_code: {
+      [Op.eq]: code
+    }
+  };
+  await orm.User.findOne({
+    attributes: ["user_type"],
+    where: conditions
+  }).then(row => {    
+    success = true
+    data = { user_type: row.user_type }
+    message = "Found"
+  }).catch(e => {
+    error = e.message
+  })
+
+  return { success, data, message, error }
+}
+
 async function registerApplicantWithEmail(data) {
   const studentCode = data.student_code
   const email = data.email
@@ -145,5 +167,6 @@ module.exports = {
   signInByEmail,
   checkIfStudentRegistered,
   registerApplicantWithEmail,
+  getUserTypeByUserCode,
   activateUserByID
 }

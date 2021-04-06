@@ -12,10 +12,11 @@ async function identifyStudent(req, res) {
 async function registerApplicantWithEmail(req, res) {
   const body = req.body;
   const data = {
+    user_code: body.user_code,
     user_type: applicant,
     email: body.email,
     password: body.password,
-    student_code: body.student_code,
+    student_code: body.std_code,
     person_no: body.person_no,
     created_at: dateTime.currentDateTime()
   }
