@@ -1,4 +1,4 @@
-const { local, Job, JobType, SalaryType, Province, District, Region } = require("../orm")
+const { local, Job, JobType, SalaryType, Province, District, Region, JobCategory } = require("../orm")
 const { Op, QueryTypes } = require("sequelize")
 const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
@@ -6,7 +6,7 @@ const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
 const JOB_AVAILABLE_DAY = 90
 
 async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLAY_START) {
-  let success = false, data = [], itemCount = 0, message = "Data not found", error = null
+  let data = [], itemCount = 0, message = "Data not found", error = null
 
   await Job.findAll({
     where: conditions,
@@ -35,7 +35,6 @@ async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLA
       }
     ]
   }).then(result => {
-    success = true
     data = result
     itemCount = data.length
     message = `Data has been found ${data.length} records`
@@ -43,7 +42,7 @@ async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLA
     error = e.message
   })
 
-  return { success, data, itemCount, message, error }
+  return { data, itemCount, message, error }
 }
 
 async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START) {
@@ -96,8 +95,7 @@ async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START)
   await local
     .query(sqlCommand, { raw: true, type: QueryTypes.SELECT })
     .then(result => {
-      success = true,
-        data = result
+      data = result
       itemCount = result.length
       message = `Data found ${data.length} records`
     })
@@ -105,11 +103,11 @@ async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START)
       error = e.message
     })
 
-  return { success, data, itemCount, message, error }
+  return { data, itemCount, message, error }
 }
 
 async function getJobByID(id) {
-  let success = false, data = null, message = `Data id#${id} not found`, error = null
+  let data = null, message = `Data id#${id} not found`, error = null
   const conditions = {
     job_id: {
       [Op.eq]: id
@@ -141,7 +139,6 @@ async function getJobByID(id) {
     ]
   })
     .then(result => {
-      success = true
       data = result
       message = `Data id#${id} found`
     })
@@ -149,7 +146,7 @@ async function getJobByID(id) {
       error = e.message
     })
 
-  return { success, data, message, error }
+  return { data, message, error }
 }
 
 async function getJobOfCompany(id, length = DISPLAY_LENGTH, start = DISPLAY_START) {
@@ -161,17 +158,16 @@ async function getJobOfCompany(id, length = DISPLAY_LENGTH, start = DISPLAY_STAR
       [Op.eq]: 0
     }
   }
-  const { success, data, itemCount, message, error } = await getJob(conditions, length, start)
+  const { data, itemCount, message, error } = await getJob(conditions, length, start)
 
-  return { success, data, itemCount, message, error }
+  return { data, itemCount, message, error }
 }
 
 async function getJobType() {
-  let success = false, data = [], itemCount = 0, message = "No data found", error = null
+  let data = [], itemCount = 0, message = "No data found", error = null
 
   await JobType.findAll()
     .then(result => {
-      success = true
       data = result
       itemCount = data.length
       message = `There are data ${data.length} found`
@@ -179,15 +175,29 @@ async function getJobType() {
       error = e.message
     })
 
-  return { success, data, itemCount, message, error }
+  return { data, itemCount, message, error }
+}
+
+async function getJobCategory() {
+  let data = [], itemCount = 0, message = "No data found", error = null
+
+  await JobCategory.findAll()
+    .then(result => {
+      data = result
+      itemCount = data.length
+      message = `There are data ${data.length} found`
+    }).catch(e => {
+      error = e.message
+    })
+
+  return { data, itemCount, message, error }
 }
 
 async function getSalaryType() {
-  let success = false, data = [], itemCount = 0, message = "No data found", error = null
+  let data = [], itemCount = 0, message = "No data found", error = null
 
   await SalaryType.findAll()
     .then(result => {
-      success = true
       data = result
       itemCount = data.length
       message = `There are data ${data.length} found`
@@ -196,7 +206,7 @@ async function getSalaryType() {
       error = e.message
     })
 
-  return { success, data, itemCount, message, error }
+  return { data, itemCount, message, error }
 }
 
 async function createJob(insertData) {
@@ -235,8 +245,8 @@ async function updateJobByID(id, data) {
     .then(async () => {
       const { data } = await getJobByID(id)
 
-      returnData = data
       success = true
+      returnData = data      
       message = `Update job#${id} successed`
     }).catch(e => {
       error = e.message
@@ -269,14 +279,39 @@ async function deleteJobByID(id) {
   return { success, message, error }
 }
 
+async function setActiveJobById(id, isActive) {
+  let success = false, message = `Set active job#${id} failed`, error = null
+  const updateFields = {
+    active: isActive,
+    updated_at: currentDateTime()
+  }
+  const conditions = {
+    job_id: {
+      [Op.eq]: id
+    }
+  }
+  await Job.update(updateFields, { where: conditions })
+    .then(() => {
+      success = true
+      message = `Set active job#${id} sucessed`
+    })
+    .catch(e => {
+      error = e.message
+    })
+  
+  return { success, message, error }
+}
+
 module.exports = {
   searchJob,
   getJobByID,
   getJob,
   getJobType,
+  getJobCategory,
   getSalaryType,
   getJobOfCompany,
   createJob,
   updateJobByID,
-  deleteJobByID
+  deleteJobByID,
+  setActiveJobById
 }

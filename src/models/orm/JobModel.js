@@ -1,4 +1,4 @@
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define("Job", {
     job_id: {
       type: DataTypes.BIGINT,
@@ -17,6 +17,15 @@ module.exports = function(sequelize, DataTypes) {
         model: "JobType",
         key: "id",
         as: "job_type"
+      }
+    },
+    job_category: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "JobCategory",
+        key: "id",
+        as: "job_category"
       }
     },
     job_duty: {
@@ -57,11 +66,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     work_time_start: {
       type: DataTypes.STRING(5),
-      allowNull: true,      
+      allowNull: true,
     },
     work_time_end: {
       type: DataTypes.STRING(5),
-      allowNull: true,      
+      allowNull: true,
     },
     district: {
       type: DataTypes.INTEGER,

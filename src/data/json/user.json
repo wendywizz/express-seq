@@ -3,9 +3,20 @@
     "user_id": "1",
     "user_code": "d9ffkzdgg93419230dd",
     "user_type": "1",
-    "email": "usertest@gmail.com",
+    "email": "student@gmail.com",
     "student_code": "5810202292",
     "person_no": "2803800183038",
+    "active": 1,
+    "created_at": "2021-03-20 15:32:33",
+    "latest_login_at": "2021-03-20 18:22:11"
+  },
+  {
+    "user_id": "6",
+    "user_code": "uS4cfoPb1XMZ5tebkz2rm82bflk2",
+    "user_type": "2",
+    "email": "test@gmail.com",
+    "student_code": "",
+    "person_no": "",
     "active": 1,
     "created_at": "2021-03-20 15:32:33",
     "latest_login_at": "2021-03-20 18:22:11"

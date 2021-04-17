@@ -4,7 +4,7 @@ const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
 const { currentDateTime } = require("../../utils/DateTime")
 
 async function getCompany(conditions = null, length = DISPLAY_LENGTH, start = DISPLAY_START) {
-  let success = false, data = [], message = "Data not found", itemCount = 0, error = null
+  let data = [], message = "Data not found", itemCount = 0, error = null
 
   await Company.findAll({
     where: conditions,
@@ -14,7 +14,6 @@ async function getCompany(conditions = null, length = DISPLAY_LENGTH, start = DI
       ["created_at", "DESC"]
     ]
   }).then(result => {
-    success = true
     data = result
     message = `Data has been found ${data.length} records`
     itemCount = data.length
@@ -22,7 +21,23 @@ async function getCompany(conditions = null, length = DISPLAY_LENGTH, start = DI
     error = e.message
   })
 
-  return { success, data, itemCount, message, error }
+  return { data, itemCount, message, error }
+}
+
+async function getCompanyByPK(pk) {
+  const conditions = {
+    company_id: {
+      [Op.eq]: pk
+    }
+  }
+  const { data, itemCount, error } = await getCompany(conditions)
+
+  let row = null, message = `Data id#${pk} not found`
+  if (data.length > 0) {
+    row = data[0]
+    message = `Data id#${pk} found`
+  }
+  return { data: row, itemCount, message, error }
 }
 
 async function getCompanyByOwner(id) {
@@ -31,14 +46,14 @@ async function getCompanyByOwner(id) {
       [Op.eq]: id
     }
   }
-  const { success, data, itemCount, error } = await getCompany(conditions)
+  const { data, itemCount, error } = await getCompany(conditions)
 
   let row = null, message = `Data id#${id} not found`
   if (data.length > 0) {
     row = data[0]
     message = `Data id#${id} found`
   }
-  return { success, data: row, itemCount, message, error }
+  return { data: row, itemCount, message, error }
 }
 
 async function saveByOwner(ownerId, data) {
@@ -99,6 +114,7 @@ async function updateJobByOwner(ownerId, data) {
 
 module.exports = {
   getCompany,
+  getCompanyByPK,
   getCompanyByOwner,
   saveByOwner
 }

@@ -2,52 +2,60 @@ const { JobMap } = require("../models/map")
 
 async function view(req, res) {
   const { id } = req.query
-  const { success, data, message, error } = await JobMap.getJobByID(id)
+  const { data, message, error } = await JobMap.getJobByID(id)
 
-  res.send({ success, data, message, error })
+  res.send({ data, message, error })
 }
 
 async function search(req, res) {
-  const { keyword, job_type, salary_type, salary_min, salary_max, province, district, region } = req.query
+  const { keyword, job_type, category, salary_type, salary_min, salary_max, province, district, region } = req.query
   const params = {
     keyword,
     job_type,
     salary_type,
+    category,
     salary_min,
     salary_max,
     province,
     district,
     region
   }
-  const { success, data, message, error } = await JobMap.searchJob(params)
+  const { data, message, error } = await JobMap.searchJob(params)
 
-  res.send({ success, data, message, itemCount: data.length, error })
+  res.send({ data, message, itemCount: data.length, error })
 }
 
 async function getJobType(req, res) {
-  const { success, data, itemCount, message, error } = await JobMap.getJobType()
+  const { data, itemCount, message, error } = await JobMap.getJobType()
 
-  res.send({ success, data, itemCount, message, error })
+  res.send({ data, itemCount, message, error })
+}
+
+async function getJobCategory(req, res) {
+  const { data, itemCount, message, error } = await JobMap.getJobCategory()
+
+  res.send({ data, itemCount, message, error })
 }
 
 async function getSalaryType(req, res) {
-  const { success, data, itemCount, message, error } = await JobMap.getSalaryType()
+  const { data, itemCount, message, error } = await JobMap.getSalaryType()
 
-  res.send({ success, data, itemCount, message, error })
+  res.send({ data, itemCount, message, error })
 }
 
 async function getJobOfCompany(req, res) {
   const { id } = req.body
-  const { success, data, itemCount, message, error } = await JobMap.getJobOfCompany(id)
+  const { data, itemCount, message, error } = await JobMap.getJobOfCompany(id)
 
-  res.send({ success, data, itemCount, message, error })
+  res.send({ data, itemCount, message, error })
 }
 
 async function add(req, res) {  
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, district, province, region, amount, company_owner, created_by } = req.body  
+  const { position, job_type, category, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, district, province, region, amount, company_owner, created_by } = req.body  
   const newData = {
     job_position: position,
     job_type: job_type,
+    job_category: category,
     job_duty: duty,
     job_performance: performance,
     job_welfare: welfare,
@@ -70,11 +78,12 @@ async function add(req, res) {
 }
 
 async function save(req, res) {
-  const { position, job_type, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, district, province, region, amount, id } = req.body
+  const { position, job_type, category, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, district, province, region, amount, id } = req.body
   
   const updateData = {
     job_position: position,
     job_type: job_type,
+    job_category: category,
     job_duty: duty,
     job_performance: performance,
     job_welfare: welfare,
@@ -101,13 +110,22 @@ async function remove(req, res) {
   res.send({ success, message, error })
 }
 
+async function setActive(req, res) {
+  const { id } = req.body
+  const { success, message, error } = await JobMap.setActiveJobById(id)
+
+  res.send({ success, message, error })
+}
+
 module.exports = {
   view,
   search,
   getJobType,
+  getJobCategory,
   getSalaryType,
   getJobOfCompany,
   add,
   save,
-  remove
+  remove,
+  setActive
 }
