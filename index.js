@@ -10,6 +10,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
+app.use(express.static("uploads/images"));
 app.use(function (req, res, next) {
   res.set("Content-Type", "application/json")
   res.set("Access-Control-Allow-Origin", "*")

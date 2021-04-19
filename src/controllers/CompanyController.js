@@ -1,7 +1,8 @@
 const { CompanyMap } = require("../models/map")
+const url = require('url');
 
-async function saveByOwner(req, res) {  
-  const { owner } = req.body   
+async function saveByOwner(req, res) {
+  const { owner } = req.body
   const saveData = {
     company_name: req.body.name,
     about: req.body.about,
@@ -21,7 +22,7 @@ async function saveByOwner(req, res) {
 async function getCompany(req, res) {
   const { id } = req.query
 
-  const { data, message ,error } = await CompanyMap.getCompanyByPK(id)
+  const { data, message, error } = await CompanyMap.getCompanyByPK(id)
   res.send({ data, message, error })
 }
 
@@ -32,8 +33,24 @@ async function getInfoByOwner(req, res) {
   res.send({ data, message, error })
 }
 
-module.exports = {  
+async function uploadLogo(req, res) {
+  let success, imageUrl = null
+  const file = req.file
+  const reqUrl = url.format({
+    protocol: req.protocol,
+    host: req.get('host'),
+  });
+
+  if (file) {
+    success = true
+    imageUrl = reqUrl + '/employer/' + file.filename
+  }
+  res.send({ success, imageUrl })
+}
+
+module.exports = {
   saveByOwner,
   getCompany,
-  getInfoByOwner
+  getInfoByOwner,
+  uploadLogo
 }
