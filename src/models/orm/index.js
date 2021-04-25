@@ -30,7 +30,18 @@ orm.Region = require("./RegionModel")(local, Sequelize)
 orm.Province = require("./ProvinceModel")(local, Sequelize)
 orm.District = require("./DistrictModel")(local, Sequelize)
 orm.User = require("./UserModel.js")(local, Sequelize)
+
+/* Company Model */
 orm.Company = require("./CompanyModel")(local, Sequelize)
+orm.Company.belongsTo(orm.Province, {
+  as: "province_asso",
+  foreignKey: "province"
+})
+orm.Company.belongsTo(orm.District, {
+  as: "district_asso",
+  foreignKey: "district"
+})
+
 orm.JobType = require("./JobTypeModel")(local, Sequelize)
 orm.JobCategory = require("./JobCategoryModel")(local, Sequelize)
 orm.SalaryType = require("./SalaryTypeModel")(local, Sequelize)

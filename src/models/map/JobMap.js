@@ -1,4 +1,4 @@
-const { local, Job, JobType, SalaryType, Province, District, Region, JobCategory } = require("../orm")
+const { local, Job, JobType, SalaryType, Province, District, Region, JobCategory, Company } = require("../orm")
 const { Op, QueryTypes } = require("sequelize")
 const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
@@ -46,62 +46,71 @@ async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLA
 }
 
 async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START) {
-  let success = false, data = [], itemCount = 0, message = "Data not found", error = null
-  let sqlCommand = `
-    SELECT 
-      t.job_position, t.job_type, t.job_duty, t.job_performance, t.job_welfare, t.salary_min, t.salary_max,
-      t.work_days, t.work_time_start, t.work_time_end, t.require, t.created_at AS created,
-      c.company_name, c.logo_path AS company_logo, 
-      st.id AS salary_type, st.name AS salary_type_name, 
-      jt.id AS job_type, jt.name AS job_type_name,
-      d.name_th, p.name_th, r.name
-    FROM Job AS t
-    INNER JOIN company c ON t.company_owner = c.company_id
-    INNER JOIN salary_type st ON t.salary_type = st.id
-    INNER JOIN job_type jt ON t.job_type = jt.id
-    INNER JOIN district d ON t.district = d.id
-    INNER JOIN province p ON t.province = p.id
-    INNER JOIN region r ON t.region = r.id
-    WHERE t.active = 1
-    AND t.deleted = 0
-    AND CURDATE() < t.expire_at
-  `
+  let data = [], itemCount = 0, message = "Data not found", error = null
+  let conditions = {
+    active: {
+      [Op.eq]: 1
+    }
+  }
   if (params.keyword) {
-    sqlCommand += ` AND (t.job_position LIKE '%${params.keyword}%' OR c.company_name LIKE '%${params.keyword}%')`
+    conditions.job_position = {
+      [Op.like]: "%"+params.keyword+"%"
+    }
   }
-  if (params.job_type) {
-    sqlCommand += ` AND t.job_type = ${params.job_type}`
+  if (params.jobCategory) {
+    conditions.job_category = {
+      [Op.in]: typeof(params.jobCategory) === "object" ? params.jobCategory : [params.jobCategory]
+    }
   }
-  if (params.salary_type) {
-    sqlCommand += ` AND t.salary_type = ${params.salary_type}`
+  if (params.jobType) {
+    conditions.job_type = {
+      [Op.eq]: params.jobType
+    }
+  }
+  if (params.salaryMin) {
+    conditions.salary_min = {
+      [Op.gte]: params.salaryMin
+    }
+  }
+  if (params.salaryMax) {
+    conditions.salary_max = {
+      [Op.lte]: params.salaryMax
+    }
   }
   if (params.province) {
-    if (Array.isArray(params.province)) {
-      sqlCommand += ` AND t.province IN (${params.province})`
+    conditions.province = {
+      [Op.eq]: params.province
     }
   }
   if (params.district) {
-    if (Array.isArray(params.district)) {
-      sqlCommand += ` AND t.district IN (${params.district})`
+    conditions.district = {
+      [Op.eq]: params.district
     }
   }
-  if (params.region) {
-    if (Array.isArray(params.region)) {
-      sqlCommand += ` AND t.region IN (${params.region})`
-    }
-  }
-  sqlCommand += ` ORDER BY t.created_at DESC LIMIT ${length} OFFSET ${start}`
-
-  await local
-    .query(sqlCommand, { raw: true, type: QueryTypes.SELECT })
-    .then(result => {
-      data = result
-      itemCount = result.length
-      message = `Data found ${data.length} records`
-    })
-    .catch(e => {
-      error = e.message
-    })
+  
+  await Job.findAll({
+    where: conditions,
+    order: [
+      ['created_at', 'DESC']
+    ],
+    limit: length,
+    offset: start,
+    include: [
+      { model: JobType, as: "job_type_asso" },
+      { model: SalaryType, as: "salary_type_asso" },
+      { model: Province, as: "province_asso" },
+      { model: District, as: "district_asso" },
+      { model: Company, as: "company_owner_asso" },
+    ]
+  })
+  .then(result => {
+    data = result
+    itemCount = data.length
+    message = `There are data ${data.length} found`
+  })
+  .catch(e => {
+    error = e.message
+  })
 
   return { data, itemCount, message, error }
 }
@@ -120,31 +129,27 @@ async function getJobByID(id) {
     where: conditions,
     include: [
       { model: JobType, as: "job_type_asso" },
+      { model: JobCategory, as: "job_category_asso" },
       { model: SalaryType, as: "salary_type_asso" },
+      { model: Province, as: "province_asso" },
+      { model: District, as: "district_asso" },
       {
-        model: Province,
-        as: "province_asso",
-        attributes: ["id", ["name_th", "name"]]
-      },
-      {
-        model: District,
-        as: "district_asso",
-        attributes: ["id", ["name_th", "name"]]
-      },
-      {
-        model: Region,
-        as: "region_asso",
-        attributes: ["id", "name"]
+        model: Company,
+        as: "company_owner_asso",
+        include: [
+          { model: Province, as: "province_asso" },
+          { model: District, as: "district_asso" }
+        ]    
       }
     ]
   })
-    .then(result => {
-      data = result
-      message = `Data id#${id} found`
-    })
-    .catch(e => {
-      error = e.message
-    })
+  .then(result => {
+    data = result
+    message = `Data id#${id} found`
+  })
+  .catch(e => {
+    error = e.message
+  })
 
   return { data, message, error }
 }

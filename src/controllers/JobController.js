@@ -8,21 +8,19 @@ async function view(req, res) {
 }
 
 async function search(req, res) {
-  const { keyword, job_type, category, salary_type, salary_min, salary_max, province, district, region } = req.query
+  const { keyword, category, type, salary_min, salary_max, province, district, start, length } = req.query
   const params = {
     keyword,
-    job_type,
-    salary_type,
-    category,
-    salary_min,
-    salary_max,
+    jobType: type,
+    jobCategory: category,
+    salaryMin: salary_min,
+    salaryMax: salary_max,
     province,
-    district,
-    region
+    district
   }
-  const { data, message, error } = await JobMap.searchJob(params)
+  const { data, itemCount, message, error } = await JobMap.searchJob(params)
 
-  res.send({ data, message, itemCount: data.length, error })
+  res.send({ data, message, itemCount, error })
 }
 
 async function getJobType(req, res) {
