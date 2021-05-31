@@ -1,4 +1,4 @@
-const { local, Job, JobType, SalaryType, Province, District, Region, JobCategory, Company } = require("../orm")
+const { Job, JobType, SalaryType, Province, District, Region, JobCategory, Company } = require("../orm")
 const { Op, QueryTypes } = require("sequelize")
 const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
@@ -8,7 +8,7 @@ const JOB_AVAILABLE_DAY = 90
 async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLAY_START) {
   let data = [], itemCount = 0, message = "Data not found", error = null
 
-  await Job.findAll({
+  await Job.findAndCountAll({
     where: conditions,
     limit: length,
     offset: start,
@@ -35,9 +35,9 @@ async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLA
       }
     ]
   }).then(result => {
-    data = result
-    itemCount = data.length
-    message = `Data has been found ${data.length} records`
+    data = result.rows
+    itemCount = result.count
+    message = `Data has been found ${result.count} records`
   }).catch(e => {
     error = e.message
   })
@@ -54,12 +54,12 @@ async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START)
   }
   if (params.keyword) {
     conditions.job_position = {
-      [Op.like]: "%"+params.keyword+"%"
+      [Op.like]: "%" + params.keyword + "%"
     }
   }
   if (params.jobCategory) {
     conditions.job_category = {
-      [Op.in]: typeof(params.jobCategory) === "object" ? params.jobCategory : [params.jobCategory]
+      [Op.in]: typeof (params.jobCategory) === "object" ? params.jobCategory : [params.jobCategory]
     }
   }
   if (params.jobType) {
@@ -87,14 +87,13 @@ async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START)
       [Op.eq]: params.district
     }
   }
-  
-  await Job.findAll({
+  await Job.findAndCountAll({
     where: conditions,
     order: [
       ['created_at', 'DESC']
     ],
-    limit: length,
-    offset: start,
+    limit: Number(length),
+    offset: Number(start),
     include: [
       { model: JobType, as: "job_type_asso" },
       { model: SalaryType, as: "salary_type_asso" },
@@ -103,14 +102,14 @@ async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START)
       { model: Company, as: "company_owner_asso" },
     ]
   })
-  .then(result => {
-    data = result
-    itemCount = data.length
-    message = `There are data ${data.length} found`
-  })
-  .catch(e => {
-    error = e.message
-  })
+    .then(result => {
+      data = result.rows
+      itemCount = result.count
+      message = `There are data ${result.count} found`
+    })
+    .catch(e => {
+      error = e.message
+    })
 
   return { data, itemCount, message, error }
 }
@@ -139,28 +138,33 @@ async function getJobByID(id) {
         include: [
           { model: Province, as: "province_asso" },
           { model: District, as: "district_asso" }
-        ]    
+        ]
       }
     ]
   })
-  .then(result => {
-    data = result
-    message = `Data id#${id} found`
-  })
-  .catch(e => {
-    error = e.message
-  })
+    .then(result => {
+      data = result
+      message = `Data id#${id} found`
+    })
+    .catch(e => {
+      error = e.message
+    })
 
   return { data, message, error }
 }
 
-async function getJobOfCompany(id, length = DISPLAY_LENGTH, start = DISPLAY_START) {
-  const conditions = {
+async function getJobOfCompany(id, length = DISPLAY_LENGTH, start = DISPLAY_START, status=null) {
+  let conditions = {
     company_owner: {
       [Op.eq]: id
     },
     deleted: {
       [Op.eq]: 0
+    }
+  }
+  if (status !== null) {    
+    conditions.active = {
+      [Op.eq]: status
     }
   }
   const { data, itemCount, message, error } = await getJob(conditions, length, start)
@@ -183,7 +187,7 @@ async function getJobType() {
   return { data, itemCount, message, error }
 }
 
-async function getJobCategory() {
+async function getJobCategory(countActiveJob=false) {
   let data = [], itemCount = 0, message = "No data found", error = null
 
   await JobCategory.findAll()
@@ -191,11 +195,19 @@ async function getJobCategory() {
       data = result
       itemCount = data.length
       message = `There are data ${data.length} found`
+
+      if (countActiveJob) {
+        data = data.map
+      }
     }).catch(e => {
       error = e.message
     })
 
   return { data, itemCount, message, error }
+}
+
+async function countActiveJobByCategory(categoryId) {
+  let itemCount = 0, error = null
 }
 
 async function getSalaryType() {
@@ -251,7 +263,7 @@ async function updateJobByID(id, data) {
       const { data } = await getJobByID(id)
 
       success = true
-      returnData = data      
+      returnData = data
       message = `Update job#${id} successed`
     }).catch(e => {
       error = e.message
@@ -303,8 +315,32 @@ async function setActiveJobById(id, isActive) {
     .catch(e => {
       error = e.message
     })
-  
+
   return { success, message, error }
+}
+
+async function countAllActiveJob() {
+  let itemCount = 0, error = null
+  const conditions = {
+    active: {
+      [Op.eq]: 1
+    },
+    deleted: {
+      [Op.eq]: 0
+    },
+    expire_at: {
+      [Op.gt]: currentDateTime()
+    }
+  }
+  await Job.count({ where: conditions })
+    .then(result => {
+      itemCount = result
+    })
+    .catch(e => {
+      error = e.message
+    })
+
+  return { itemCount, error }
 }
 
 module.exports = {
@@ -318,5 +354,6 @@ module.exports = {
   createJob,
   updateJobByID,
   deleteJobByID,
-  setActiveJobById
+  setActiveJobById,
+  countAllActiveJob
 }

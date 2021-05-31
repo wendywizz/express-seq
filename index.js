@@ -1,8 +1,10 @@
 const express = require("express")
 const app = express();
+const path = require('path');
 const cors = require("cors")
 require('dotenv').config()
 
+const publicDir = path.join(__dirname, 'public');
 const corsOptions = {
   origin: "http://localhost:3000"
 }
@@ -10,7 +12,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
-app.use(express.static("uploads/images"));
+app.use(express.static(publicDir));
 app.use(function (req, res, next) {
   res.set("Content-Type", "application/json")
   res.set("Access-Control-Allow-Origin", "*")

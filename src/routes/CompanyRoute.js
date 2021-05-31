@@ -1,7 +1,6 @@
 const multer = require("multer")
 const path = require("path")
-
-const UPLOAD_COMPANY_LOGO_PATH = `${__dirname}../../../uploads/images/employer`
+const { UPLOAD_COMPANY_LOGO_PATH } = require("../config/path")
 
 module.exports = (app) => {
   const router = require("express").Router()

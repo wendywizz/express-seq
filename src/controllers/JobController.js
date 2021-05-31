@@ -1,26 +1,41 @@
 const { JobMap } = require("../models/map")
+const { CATEGORY_IMAGE_PATH, LOGO_SOURCE_URL } = require("../config/path")
 
 async function view(req, res) {
   const { id } = req.query
   const { data, message, error } = await JobMap.getJobByID(id)
 
-  res.send({ data, message, error })
+  const serverUrl = req.protocol + '://' + req.get('host') + "/"
+  const rData = {
+    ...data.dataValues,
+    logo_source_url: serverUrl + LOGO_SOURCE_URL
+  }
+
+  res.send({ data: rData, message, error })
 }
 
 async function search(req, res) {
-  const { keyword, category, type, salary_min, salary_max, province, district, start, length } = req.query
+  const { keyword, category, type, salary_min, salary_max, province, district, length, start } = req.query
   const params = {
     keyword,
     jobType: type,
     jobCategory: category,
+    province,
+    district,
     salaryMin: salary_min,
     salaryMax: salary_max,
-    province,
-    district
   }
-  const { data, itemCount, message, error } = await JobMap.searchJob(params)
+  const { data, itemCount, message, error } = await JobMap.searchJob(params, length, start)
 
-  res.send({ data, message, itemCount, error })
+  const serverUrl = req.protocol + '://' + req.get('host') + "/"
+  const rData = data.map(value => {
+    return {
+      ...value.dataValues,
+      logo_source_url: serverUrl + LOGO_SOURCE_URL
+    }
+  })
+
+  res.send({ data: rData, message, itemCount, error })
 }
 
 async function getJobType(req, res) {
@@ -30,9 +45,18 @@ async function getJobType(req, res) {
 }
 
 async function getJobCategory(req, res) {
+  const { show_count } = req.query
   const { data, itemCount, message, error } = await JobMap.getJobCategory()
+  
+  const serverUrl = req.protocol + '://' + req.get('host') + "/"
+  const rData = data.map(value => {
+    return {
+      ...value.dataValues,
+      image: serverUrl + CATEGORY_IMAGE_PATH + value.image
+    }
+  })
 
-  res.send({ data, itemCount, message, error })
+  res.send({ data: rData, itemCount, message, error })
 }
 
 async function getSalaryType(req, res) {
@@ -42,8 +66,8 @@ async function getSalaryType(req, res) {
 }
 
 async function getJobOfCompany(req, res) {
-  const { id } = req.body
-  const { data, itemCount, message, error } = await JobMap.getJobOfCompany(id)
+  const { id, start, length, status } = req.body
+  const { data, itemCount, message, error } = await JobMap.getJobOfCompany(id, length, start, status)
 
   res.send({ data, itemCount, message, error })
 }
@@ -115,6 +139,12 @@ async function setActive(req, res) {
   res.send({ success, message, error })
 }
 
+async function countAllActiveJob(req, res) {
+  const { itemCount, error } = await JobMap.countAllActiveJob()
+
+  res.send({ itemCount, error })
+}
+
 module.exports = {
   view,
   search,
@@ -122,6 +152,7 @@ module.exports = {
   getJobCategory,
   getSalaryType,
   getJobOfCompany,
+  countAllActiveJob,
   add,
   save,
   remove,

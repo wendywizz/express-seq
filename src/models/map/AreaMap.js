@@ -1,7 +1,7 @@
 const { Province, District } = require("../orm")
 const { Op } = require("sequelize")
 
-async function getProvince() {
+async function listProvince() {
   let data = [], itemCount = 0, message = "Data not found", error = null
 
   await Province.findAll({
@@ -21,7 +21,7 @@ async function getProvince() {
   return { data, itemCount, message, error }
 }
 
-async function getDistrictByProvince(id) {
+async function listDistrictByProvince(id) {
   let data = [], itemCount = 0, message = "Data not found", error = null
 
   await District.findAll({
@@ -46,7 +46,47 @@ async function getDistrictByProvince(id) {
   return { data, itemCount, message, error }
 }
 
+async function listProvinceByPk(pk) {
+  let data = null, message = `Data id#${pk} not found`, error = null
+  const conditions = {
+    id: {
+      [Op.eq]: pk
+    },
+  }
+  await Province.findOne({ where: conditions })
+  .then(result => {
+    data = result
+    message = `Data id#${pk} found`
+  })
+  .catch(e => {
+    error = e.message
+  })
+
+  return { data, message, error }
+}
+
+async function getDistrictByPk(pk) {
+  let data = null, message = `Data id#${pk} not found`, error = null
+  const conditions = {
+    id: {
+      [Op.eq]: pk
+    },
+  }
+  await District.findOne({ where: conditions })
+  .then(result => {
+    data = result
+    message = `Data id#${pk} found`
+  })
+  .catch(e => {
+    error = e.message
+  })
+
+  return { data, message, error }
+}
+
 module.exports = {
-  getProvince,
-  getDistrictByProvince
+  listProvince,
+  listDistrictByProvince,
+  listProvinceByPk,
+  getDistrictByPk
 }

@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(250),
       allowNull: false
     },
-    logo_path: {
+    logo_file: {
       type: DataTypes.TEXT,
       allowNull: true
     },

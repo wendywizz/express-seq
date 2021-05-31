@@ -1,5 +1,8 @@
 const { CompanyMap } = require("../models/map")
+const CompanyModel = require("../models/orm/CompanyModel");
+const { uploadLogoByPK } = require("../models/map/CompanyMap");
 const url = require('url');
+const { LOGO_SOURCE_URL } = require("../config/path");
 
 async function saveByOwner(req, res) {
   const { owner } = req.body
@@ -21,31 +24,38 @@ async function saveByOwner(req, res) {
 
 async function getCompany(req, res) {
   const { id } = req.query
-
   const { data, message, error } = await CompanyMap.getCompanyByPK(id)
-  res.send({ data, message, error })
+
+  const serverUrl = req.protocol + '://' + req.get('host') + "/"
+  const rData = {
+    ...data.dataValues,
+    logo_url: serverUrl + LOGO_SOURCE_URL + data.logo_file
+  }
+  res.send({ data: rData, message, error })
 }
 
 async function getInfoByOwner(req, res) {
   const { owner } = req.query
-
   const { data, message, error } = await CompanyMap.getCompanyByOwner(owner)
-  res.send({ data, message, error })
+
+  const serverUrl = req.protocol + '://' + req.get('host') + "/"
+  const rData = {
+    ...data.dataValues,
+    logo_url: serverUrl + LOGO_SOURCE_URL + data.logo_file
+  }
+  res.send({ data: rData, message, error })
 }
 
 async function uploadLogo(req, res) {
-  let success, imageUrl = null
+  const { company_id } = req.body
   const file = req.file
   const reqUrl = url.format({
     protocol: req.protocol,
     host: req.get('host'),
   });
 
-  if (file) {
-    success = true
-    imageUrl = reqUrl + '/employer/' + file.filename
-  }
-  res.send({ success, imageUrl })
+  const { success, imageUrl, message, error } = uploadLogoByPK(company_id, file, reqUrl)
+  res.send({ success, imageUrl, message, error })
 }
 
 module.exports = {

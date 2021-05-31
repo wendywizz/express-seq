@@ -2,6 +2,8 @@ const { Company } = require("../orm")
 const { Op } = require("sequelize")
 const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
 const { currentDateTime } = require("../../utils/DateTime")
+let { UPLOAD_COMPANY_LOGO_PATH } = require("../../config/path")
+const fs = require("fs")
 
 async function getCompany(conditions = null, length = DISPLAY_LENGTH, start = DISPLAY_START) {
   let data = [], message = "Data not found", itemCount = 0, error = null
@@ -112,9 +114,51 @@ async function updateJobByOwner(ownerId, data) {
   return { success, data: returnData, message, error }
 }
 
+async function uploadLogoByPK(companyId, file, reqUrl) {
+  let success, imageUrl = null, message = 'Upload image failed', error = null
+
+  if (file) {
+    let oldLogofileName = null
+    const { data, error } = await getCompanyByPK(companyId)
+
+    if (!error) {
+      oldLogofileName = data.logo_file
+
+      const updateData = { 
+        logo_file: file.filename,
+        updated_at: currentDateTime(),
+      }
+      const conditions = { 
+        company_id: {
+          [Op.eq]: companyId 
+        }
+      }   
+      await Company.update(updateData, { where: conditions })
+        .then(async () => {
+          success = true
+          imageUrl = reqUrl + '/employer/' + file.filename
+          message = 'Upload image successed'
+
+          // Remove old file
+          if (oldLogofileName) {
+            let imagePath = __dir + UPLOAD_COMPANY_LOGO_PATH + oldLogofileName
+            console.log("image=",imagePath)
+            //await fs.unlink(imagePath)
+          }
+        })
+        .catch(e => {
+          error = e.message
+        })
+    }
+  }
+
+  return { success, imageUrl, message, error }
+}
+
 module.exports = {
   getCompany,
   getCompanyByPK,
   getCompanyByOwner,
-  saveByOwner
+  saveByOwner,
+  uploadLogoByPK
 }
