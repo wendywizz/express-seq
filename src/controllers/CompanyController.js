@@ -35,7 +35,7 @@ async function getCompany(req, res) {
 }
 
 async function getInfoByOwner(req, res) {
-  const { owner } = req.query
+  const { owner } = req.query  
   const { data, message, error } = await CompanyMap.getCompanyByOwner(owner)
 
   const serverUrl = req.protocol + '://' + req.get('host') + "/"

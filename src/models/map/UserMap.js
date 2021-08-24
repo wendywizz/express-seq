@@ -76,39 +76,18 @@ async function checkIfEmailExist(email) {
   return { success, message, error }
 }
 
-async function getUserByUserCode(code) {
+async function getUserByPK(id) {
   let data = null, message = `Not found`, error = null
 
   const conditions = {
-    user_code: {
-      [Op.eq]: code
+    user_id: {
+      [Op.eq]: id
     }
   };
   await orm.User.findOne({
     where: conditions
   }).then(row => {
     data = row
-    message = "Found"
-  }).catch(e => {
-    error = e.message
-  })
-
-  return { data, message, error }
-}
-
-async function getUserTypeByUserCode(code) {
-  let data = null, message = `Not found`, error = null
-
-  const conditions = {
-    user_code: {
-      [Op.eq]: code
-    }
-  };
-  await orm.User.findOne({
-    attributes: ["user_type"],
-    where: conditions
-  }).then(row => {
-    data = { user_type: row.user_type }
     message = "Found"
   }).catch(e => {
     error = e.message
@@ -186,7 +165,49 @@ module.exports = {
   signInByEmail,
   checkIfStudentRegistered,
   registerApplicantWithEmail,
-  getUserByUserCode,
-  getUserTypeByUserCode,
+  getUserByPK,
+  /*getUserByUserCode,
+  getUserTypeByUserCode,*/
   activateUserByID
 }
+
+/*async function getUserByUserCode(code) {
+  let data = null, message = `Not found`, error = null
+
+  const conditions = {
+    user_code: {
+      [Op.eq]: code
+    }
+  };
+  await orm.User.findOne({
+    where: conditions
+  }).then(row => {
+    data = row
+    message = "Found"
+  }).catch(e => {
+    error = e.message
+  })
+
+  return { data, message, error }
+}
+
+async function getUserTypeByUserCode(code) {
+  let data = null, message = `Not found`, error = null
+
+  const conditions = {
+    user_code: {
+      [Op.eq]: code
+    }
+  };
+  await orm.User.findOne({
+    attributes: ["user_type"],
+    where: conditions
+  }).then(row => {
+    data = { user_type: row.user_type }
+    message = "Found"
+  }).catch(e => {
+    error = e.message
+  })
+
+  return { data, message, error }
+}*/

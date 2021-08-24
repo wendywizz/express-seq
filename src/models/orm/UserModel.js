@@ -6,10 +6,6 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true,
       allowNull: false,
     },
-    user_code: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
     user_type: {
       type: DataTypes.INTEGER,
       allowNull: false,

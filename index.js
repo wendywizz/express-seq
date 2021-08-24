@@ -2,6 +2,8 @@ const express = require("express")
 const app = express();
 const path = require('path');
 const cors = require("cors")
+const cookieParser = require("cookie-parser")
+const session = require('express-session')
 require('dotenv').config()
 
 const publicDir = path.join(__dirname, 'public');
@@ -18,6 +20,18 @@ app.use(function (req, res, next) {
   res.set("Access-Control-Allow-Origin", "*")
   next()
 })
+app.use(cookieParser())
+app.use(
+  session({
+    key: 'id',
+    secret: 'subscribe',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      expires: 60 * 60 * 24
+    }
+  })
+)
 
 // Sync Database
 /*const syncLocal = require("./src/models/orm").local
