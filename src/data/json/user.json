@@ -1,9 +1,9 @@
 [
   {
     "user_id": "1",
-    "user_code": "d9ffkzdgg93419230dd",
     "user_type": "1",
     "email": "student@gmail.com",
+    "password": "12123",
     "student_code": "5810202292",
     "person_no": "2803800183038",
     "active": 1,
@@ -12,9 +12,9 @@
   },
   {
     "user_id": "6",
-    "user_code": "uS4cfoPb1XMZ5tebkz2rm82bflk2",
     "user_type": "2",
-    "email": "test@gmail.com",
+    "email": "employer@gmail.com",
+    "password": "12123",
     "student_code": "",
     "person_no": "",
     "active": 1,

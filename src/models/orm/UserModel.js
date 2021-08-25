@@ -15,6 +15,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(250),
       allowNull: true
     },
+    password: {
+      type: DataTypes.STRING(250),
+      allowNull: false
+    },
     student_code: {
       type: DataTypes.STRING(15),
       allowNull: true
@@ -60,6 +64,6 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'user',
     modelName: 'User',
     timestamps: false,
-    indexes: [{ unique: true, fields: ['user_id', 'user_code'] }]
+    indexes: [{ unique: true, fields: ['user_id'] }]
   })
 }

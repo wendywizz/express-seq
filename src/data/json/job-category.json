@@ -2,41 +2,41 @@
   {
     "id": 1,
     "name": "เครื่องกล ยานยนต์ หุ่นยนต์",
-    "image": "./assets/img/category/cat-mechanical.png"
+    "image": "cat-mechanical.png"
   },
   {
     "id": 2,
     "name": "โยธา การก่อสร้าง",
-    "image": "./assets/img/category/cat-civil.png"
+    "image": "cat-civil.png"
   },
   {
     "id": 3,
     "name": "นักวิจัย นักวิทยศาสตร์ เคมี",
-    "image": "./assets/img/category/cat-chem.png"
+    "image": "cat-chem.png"
   },
   {
     "id": 4,
     "name": "ไฟฟ้า อิเล็กทรอนิกส์ โทรคมนาคม",
-    "image": "./assets/img/category/cat-elec.png"
+    "image": "cat-elec.png"
   },
   {
     "id": 5,
     "name": "คอมพิวเตอร์ โปรแกรมเมอร์ เน็คเวิร์ค",
-    "image": "./assets/img/category/cat-computer.png"
+    "image": "cat-computer.png"
   },
   {
     "id": 6,
     "name": "ระบบโรงงาน อุตสาหกรรม",
-    "image": "./assets/img/category/cat-factory.png"
+    "image": "cat-factory.png"
   },
   {
     "id": 7,
     "name": "การขนส่ง โลจิสติกส์",
-    "image": "./assets/img/category/cat-logistic.png"
+    "image": "cat-logistic.png"
   },
   {
     "id": 8,
     "name": "อื่นๆ",
-    "image": "./assets/img/category/cat-other.png"
+    "image": "cat-other.png"
   }
 ]
