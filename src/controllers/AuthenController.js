@@ -23,13 +23,13 @@ async function signInByEmail(req, res) {
   res.send({ success: authSuccess, data: respData, token: respToken, message })
 }
 
-async function signOut(req, res) {
+/*async function signOut(req, res) {
   req.session.destroy(() => {
     req.logout()
 
     res.send({ success: true, message: "Signout completed"})
   })
-}
+}*/
 
 async function userInfo(req, res) {
   let authSuccess = false, respData = {}, respMessage = 'No userdata'
@@ -44,6 +44,7 @@ async function userInfo(req, res) {
     respData = {
       id: user.user_id,
       type: user.user_type,
+      email: user.email,
       student_code: user.student_code
     }
   }
@@ -57,6 +58,6 @@ async function userInfo(req, res) {
 
 module.exports = {
   signInByEmail,
-  signOut,
+  //signOut,
   userInfo
 }

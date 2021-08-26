@@ -14,7 +14,7 @@ module.exports = (app) => {
   router.post("/add", jobCtrl.add)
   router.post("/save", jobCtrl.save)
   router.post("/remove", jobCtrl.remove)
-  router.post("/active", jobCtrl.setActive)
+  router.post("/set-active", jobCtrl.setActive)
 
   app.use("/api/job", router)
 }

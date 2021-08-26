@@ -59,7 +59,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    work_days: {
+    /*work_days: {
       type: DataTypes.STRING(100),
       allowNull: true,
       defaultValue: '{"mon":0,"tue":0,"wed":0,"thu":0,"fri":0,"sat":0,"sun":0}'
@@ -71,7 +71,7 @@ module.exports = function (sequelize, DataTypes) {
     work_time_end: {
       type: DataTypes.STRING(5),
       allowNull: true,
-    },
+    },*/
     district: {
       type: DataTypes.INTEGER,
       allowNull: true,

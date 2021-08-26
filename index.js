@@ -28,7 +28,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      expires: 3000 * 3000 * 24
+      expires: 30000 * 30000 * 24
     }
   })
 )

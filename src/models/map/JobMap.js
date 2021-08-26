@@ -50,6 +50,12 @@ async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START)
   let conditions = {
     active: {
       [Op.eq]: 1
+    },
+    deleted: {
+      [Op.eq]: 0
+    },
+    expire_at: {
+      [Op.gt]: moment().format('YYYY-MM-DD')
     }
   }
   if (params.keyword) {
@@ -206,9 +212,9 @@ async function getJobCategory(countActiveJob=false) {
   return { data, itemCount, message, error }
 }
 
-async function countActiveJobByCategory(categoryId) {
+/*async function countActiveJobByCategory(categoryId) {
   let itemCount = 0, error = null
-}
+}*/
 
 async function getSalaryType() {
   let data = [], itemCount = 0, message = "No data found", error = null

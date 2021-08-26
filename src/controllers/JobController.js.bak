@@ -73,7 +73,7 @@ async function getJobOfCompany(req, res) {
 }
 
 async function add(req, res) {  
-  const { position, job_type, category, duty, performance, welfare, salary_type, salary_min, salary_max, district, province, region, amount, company_owner, created_by } = req.body  
+  const { position, job_type, category, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, district, province, region, amount, company_owner, created_by } = req.body  
   const newData = {
     job_position: position,
     job_type: job_type,
@@ -84,6 +84,9 @@ async function add(req, res) {
     salary_type: salary_type,
     salary_min: salary_min,
     salary_max: salary_max,
+    work_days: work_days,
+    work_time_start: work_timestart,
+    work_time_end: work_timeend,
     district: district,
     province: province,    
     region: region,
@@ -97,7 +100,7 @@ async function add(req, res) {
 }
 
 async function save(req, res) {
-  const { position, job_type, category, duty, performance, welfare, salary_type, salary_min, salary_max, district, province, region, amount, id } = req.body
+  const { position, job_type, category, duty, performance, welfare, salary_type, salary_min, salary_max, work_days, work_timestart, work_timeend, district, province, region, amount, id } = req.body
   
   const updateData = {
     job_position: position,
@@ -109,6 +112,9 @@ async function save(req, res) {
     salary_type: salary_type,
     salary_min: salary_min,
     salary_max: salary_max,
+    work_days: work_days,
+    work_time_start: work_timestart,
+    work_time_end: work_timeend,
     district: district,
     province: province,
     region: region,
@@ -127,8 +133,8 @@ async function remove(req, res) {
 }
 
 async function setActive(req, res) {
-  const { id, active } = req.body
-  const { success, message, error } = await JobMap.setActiveJobById(id, active)
+  const { id } = req.body
+  const { success, message, error } = await JobMap.setActiveJobById(id)
 
   res.send({ success, message, error })
 }

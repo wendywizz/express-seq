@@ -24,7 +24,7 @@ module.exports = (app) => {
   }
 
   router.get("/user-info", verifyJWT, authenCtrl.userInfo)
-  router.post("/signin", authenCtrl.signInByEmail)  
+  router.post("/signin", authenCtrl.signInByEmail)    
 
   app.use("/api/authen", router)
 }
