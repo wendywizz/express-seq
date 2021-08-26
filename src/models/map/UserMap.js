@@ -1,4 +1,4 @@
-const orm = require("../orm");
+const { User } = require("../orm");
 const { Op } = require("sequelize");
 
 async function signInByEmail(email, password) {
@@ -14,7 +14,7 @@ async function signInByEmail(email, password) {
       [Op.eq]: true
     }
   }
-  await orm.User.findOne({ where: conditions })
+  await User.findOne({ where: conditions })
     .then(row => {
       if (row) {
         success = true
@@ -41,7 +41,7 @@ async function checkIfStudentRegistered(studentCode) {
       [Op.eq]: studentCode
     }
   };
-  await orm.User.count({ where: conditions })
+  await User.count({ where: conditions })
     .then(rowCount => {
       if (rowCount > 0) {
         success = true
@@ -62,7 +62,7 @@ async function checkIfEmailExist(email) {
       [Op.eq]: email
     }
   }
-  await orm.User.count({ where: conditions })
+  await User.count({ where: conditions })
     .then(rowCount => {
       if (rowCount > 0) {
         success = true,
@@ -84,7 +84,7 @@ async function getUserByPK(id) {
       [Op.eq]: id
     }
   };
-  await orm.User.findOne({
+  await User.findOne({
     where: conditions
   }).then(row => {
     data = row
@@ -122,7 +122,7 @@ async function registerApplicantWithEmail(data) {
 
   if (!resp.success) {
     // Create New User
-    return await orm.User.create(data)
+    return await User.create(data)
       .then(() => {
         return {
           success: true,
@@ -149,7 +149,7 @@ async function registerApplicantWithEmail(data) {
 async function activateUserByID(id) {
   let success = false, message = "Activate failed", error = null
 
-  orm.User.update({ active: true }, {
+  User.update({ active: true }, {
     where: { user_id: id }
   }).then(() => {
     success = true
@@ -166,48 +166,5 @@ module.exports = {
   checkIfStudentRegistered,
   registerApplicantWithEmail,
   getUserByPK,
-  /*getUserByUserCode,
-  getUserTypeByUserCode,*/
-  activateUserByID
+  activateUserByID,  
 }
-
-/*async function getUserByUserCode(code) {
-  let data = null, message = `Not found`, error = null
-
-  const conditions = {
-    user_code: {
-      [Op.eq]: code
-    }
-  };
-  await orm.User.findOne({
-    where: conditions
-  }).then(row => {
-    data = row
-    message = "Found"
-  }).catch(e => {
-    error = e.message
-  })
-
-  return { data, message, error }
-}
-
-async function getUserTypeByUserCode(code) {
-  let data = null, message = `Not found`, error = null
-
-  const conditions = {
-    user_code: {
-      [Op.eq]: code
-    }
-  };
-  await orm.User.findOne({
-    attributes: ["user_type"],
-    where: conditions
-  }).then(row => {
-    data = { user_type: row.user_type }
-    message = "Found"
-  }).catch(e => {
-    error = e.message
-  })
-
-  return { data, message, error }
-}*/

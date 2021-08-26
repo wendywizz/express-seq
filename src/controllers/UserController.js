@@ -1,20 +1,12 @@
-const { UserMap } = require("../models/map");
+const { StudentMap } = require("../models/map");
 
-async function getUserByUserCode(req, res) {
-  const { code } = req.query
-  const { data, message, error } = await UserMap.getUserByUserCode(code)
-
-  res.send({ data, message, error })
-}
-
-async function getUserType(req, res) {
-  const { code } = req.query
-  const { data, message, error } = await UserMap.getUserTypeByUserCode(code)
+async function getStudentInfo(req, res) {
+  const { id } = req.query  
+  const { data, message, error } = await StudentMap.getStudentByUserID(id)
 
   res.send({ data, message, error })
 }
 
 module.exports = {
-  getUserByUserCode,
-  getUserType
+  getStudentInfo
 }

@@ -6,6 +6,7 @@ const ployloraConn = (envMode === "production" ? ployloraDB.production : ploylor
 
 // Setting Local database connection instance
 const Sequelize = require("sequelize");
+const { or } = require("sequelize");
 const local = new Sequelize(localConn.database, localConn.username, localConn.password, {
   host: localConn.host,
   dialect: localConn.dialect,
@@ -40,6 +41,21 @@ orm.Company.belongsTo(orm.Province, {
 orm.Company.belongsTo(orm.District, {
   as: "district_asso",
   foreignKey: "district"
+})
+
+/* Student Model */
+orm.Student = require("./StudentModal")(local, Sequelize)
+orm.Student.belongsTo(orm.Province, {
+  as: "province_asso",
+  foreignKey: "province"
+})
+orm.Student.belongsTo(orm.District, {
+  as: "district_asso",
+  foreignKey: "district"
+})
+orm.Student.belongsTo(orm.User, {
+  as: "user_asso",
+  foreignKey: "created_by"
 })
 
 orm.JobType = require("./JobTypeModel")(local, Sequelize)

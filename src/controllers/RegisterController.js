@@ -1,5 +1,5 @@
 const { StudentMap, UserMap } = require("../models/map");
-const { applicant, employer } = require("../constants/UserType")
+const { applicant } = require("../constants/UserType")
 const dateTime = require("../utils/DateTime");
 
 async function identifyStudent(req, res) {
@@ -32,7 +32,7 @@ async function activateUser(req, res) {
   res.send({ success, message, error });
 }
 
-module.exports = {
+module.exports = {  
   identifyStudent,
   registerApplicantWithEmail,
   activateUser

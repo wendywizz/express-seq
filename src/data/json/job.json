@@ -16,7 +16,7 @@
     "amount": "2",
     "active": "1",
     "created_at": "2021-03-22 16:38:16",
-    "expire_at": "2021-06-20 00:00:00",
+    "expire_at": "2021-10-20 00:00:00",
     "company_owner": "12",
     "created_by": "1"
   },
@@ -37,7 +37,7 @@
     "amount": "5",
     "active": "1",
     "created_at": "2021-03-22 16:47:30",
-    "expire_at": "2021-06-20 00:00:00",
+    "expire_at": "2021-10-20 00:00:00",
     "company_owner": "12",
     "created_by": "1"
   },
@@ -58,7 +58,7 @@
     "amount": "3",
     "active": "1",
     "created_at": "2021-03-22 16:48:02",
-    "expire_at": "2021-06-20 00:00:00",
+    "expire_at": "2021-09-20 00:00:00",
     "company_owner": "12",
     "created_by": "1"
   },
@@ -79,7 +79,7 @@
     "amount": "5",
     "active": "1",
     "created_at": "2021-03-22 16:38:16",
-    "expire_at": "2021-06-20 00:00:00",
+    "expire_at": "2021-09-20 00:00:00",
     "company_owner": "12",
     "created_by": "1"
   }

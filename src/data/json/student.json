@@ -1,0 +1,17 @@
+[
+  {
+    "student_id": "12",
+    "student_code": "6105665689",
+    "first_name": "สินทรัพย์",
+    "last_name": "อหังการงานสร้าง",    
+    "address": "15 ถนนพัฒนาซอฟแวร์​",
+    "province": "70",
+    "district": "928",
+    "postcode": "90110",    
+    "phone": "074-222665",
+    "email": "student@webmail.com",    
+    "facebook": "http://www.facebook.com/1656899899/",
+    "created_at": "2021-03-20 19:30:23",
+    "created_by": "1"
+  }
+]
