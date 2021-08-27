@@ -1,5 +1,6 @@
 const { User } = require("../orm");
 const { Op } = require("sequelize");
+const { getBaseDataStudentByCode, insertStudent } = require("./StudentMap");
 
 async function signInByEmail(email, password) {
   let success = false, data = null, message = "Login failed", error = null
@@ -96,9 +97,9 @@ async function getUserByPK(id) {
   return { data, message, error }
 }
 
-async function registerApplicantWithEmail(data) {
-  const studentCode = data.student_code
-  const email = data.email
+async function registerApplicantWithEmail(registData) {
+  const studentCode = registData.student_code
+  const email = registData.email
   let resp = null
 
   // Check if student code registrated
@@ -121,22 +122,37 @@ async function registerApplicantWithEmail(data) {
   }
 
   if (!resp.success) {
-    // Create New User
-    return await User.create(data)
-      .then(() => {
-        return {
-          success: true,
-          message: "Registration completed",
-          error: null
-        }
-      })
-      .catch(e => {
-        return {
-          success: false,
-          message: "Registration failed",
-          error: e.message
-        }
-      })
+    const { data } = await getBaseDataStudentByCode(studentCode)
+    const bdStudent = data.dataValues    
+
+    if (bdStudent) {
+      // Create New User
+      return await User.create(registData)
+        .then(async (result) => {          
+          const insertId = result.dataValues.user_id          
+          const insertData = {
+            student_code: bdStudent.STUD_ID,
+            first_name: bdStudent.STU_NAME,
+            last_name: bdStudent.STU_SNAME,
+            email,
+            created_by: insertId
+          }          
+          await insertStudent(insertData)
+          
+          return {
+            success: true,
+            message: "Registration completed",
+            error: null
+          }        
+        })
+        .catch(e => {
+          return {
+            success: false,
+            message: "Registration failed",
+            error: e.message
+          }
+        })
+    }
   }
 
   return {
