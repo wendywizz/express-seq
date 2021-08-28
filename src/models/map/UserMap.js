@@ -1,186 +1,266 @@
-const { User } = require("../orm");
+const { User, Student } = require("../orm");
 const { Op } = require("sequelize");
-const { getBaseDataStudentByCode, insertStudent } = require("./StudentMap");
+const { getBaseDataStudentByCode, createStudent } = require("./StudentMap");
+const { createCompany } = require("./CompanyMap");
+const { currentDateTime } = require("../../utils/DateTime");
+const { employerType, applicantType } = require("../../constants/UserType")
 
 async function signInByEmail(email, password) {
-  let success = false, data = null, message = "Login failed", error = null
+  let success = false,
+    data = null,
+    message = "Login failed",
+    error = null;
   const conditions = {
     email: {
-      [Op.eq]: email
+      [Op.eq]: email,
     },
     password: {
-      [Op.eq]: password
+      [Op.eq]: password,
     },
     active: {
-      [Op.eq]: true
-    }
-  }
+      [Op.eq]: true,
+    },
+  };
   await User.findOne({ where: conditions })
-    .then(row => {
+    .then((row) => {
       if (row) {
-        success = true
+        success = true;
         data = {
           id: row.user_id,
           student_code: row.student_code,
-          type: row.user_type
-        }
-        message = "Login successed"
+          type: row.user_type,
+        };
+        message = "Login successed";
       }
     })
-    .catch(e => {
-      error = e.message
-    })
+    .catch((e) => {
+      error = e.message;
+    });
 
-  return { success, data, message, error }
+  return { success, data, message, error };
 }
 
 async function checkIfStudentRegistered(studentCode) {
-  let success = false, message = `User code#${studentCode} is not register`, error = null
+  let isRegistered = false;
 
   const conditions = {
     student_code: {
-      [Op.eq]: studentCode
-    }
+      [Op.eq]: studentCode,
+    },
   };
-  await User.count({ where: conditions })
-    .then(rowCount => {
-      if (rowCount > 0) {
-        success = true
-        message = `User code#${studentCode} registered`
-      }
-    })
-    .catch(e => {
-      error = e.message
-    });
+  await Student.count({ where: conditions }).then((rowCount) => {
+    if (rowCount > 0) {
+      isRegistered = true;
+    }
+  });
 
-  return { success, message, error }
+  return isRegistered;
 }
 
 async function checkIfEmailExist(email) {
-  let success = false, message = `Email ${email} not found`, error = null
+  let isExist = false;
+
   const conditions = {
     email: {
-      [Op.eq]: email
+      [Op.eq]: email,
+    },
+  };
+  await User.count({ where: conditions }).then((rowCount) => {
+    if (rowCount > 0) {
+      isExist = true;
     }
-  }
-  await User.count({ where: conditions })
-    .then(rowCount => {
-      if (rowCount > 0) {
-        success = true,
-          message = `Email ${email} is already registrated`
-      }
-    })
-    .catch(e => {
-      error = e.message
-    })
+  });
 
-  return { success, message, error }
+  return isExist;
 }
 
 async function getUserByPK(id) {
-  let data = null, message = `Not found`, error = null
+  let data = null,
+    message = `User ID#${id} not found`,
+    error = null;
 
   const conditions = {
     user_id: {
-      [Op.eq]: id
-    }
+      [Op.eq]: id,
+    },
   };
   await User.findOne({
-    where: conditions
-  }).then(row => {
-    data = row
-    message = "Found"
-  }).catch(e => {
-    error = e.message
+    where: conditions,
   })
+    .then((row) => {
+      data = row;
+      message = `User ID#${id} found`;
+    })
+    .catch((e) => {
+      error = e.message;
+    });
 
-  return { data, message, error }
+  return { data, message, error };
 }
 
-async function registerApplicantWithEmail(registData) {
-  const studentCode = registData.student_code
-  const email = registData.email
-  let resp = null
+async function createUser(data) {
+  let insertId = null,
+    success = false,
+    message = "Registration failed",
+    error;
+  const insertData = {
+    ...data,
+    created_by: currentDateTime(),
+    created_at: currentDateTime(),
+  };
 
-  // Check if student code registrated
-  resp = await checkIfStudentRegistered(studentCode)
-  if (resp.success) {
-    return {
-      success: false,
-      message: resp.message,
-      error: resp.error
+  await User.create(insertData)
+    .then(async (result) => {
+      const id = result.dataValues.user_id;
+
+      success = true;
+      insertId = id;
+      message = "Registration completed";
+    })
+    .catch((e) => {
+      error = e.message;
+    });
+
+  return { insertId, success, message, error };
+}
+
+async function registerEmployerWithEmail(registData) {
+  let respSuccess = false,
+    respMessage,
+    respError;
+
+  if (registData) {
+    const companyName = registData.company_name,
+      email = registData.email;
+    let isVerify = true;
+
+    // Check duplicate email
+    const isExist = await checkIfEmailExist(email);
+    if (isExist) {
+      isVerify = false;
+
+      return {
+        success: respSuccess,
+        message: `Email ${email} is already registered`,
+      };
     }
-  }
-  // Check duplicate email
-  resp = await checkIfEmailExist(email)
-  if (resp.success) {
-    return {
-      success: false,
-      message: resp.message,
-      error: resp.error
-    }
-  }
 
-  if (!resp.success) {
-    const { data } = await getBaseDataStudentByCode(studentCode)
-    const bdStudent = data.dataValues    
+    // Create user
+    if (isVerify) {
+      // Insert data to 'user' table
+      registData.user_type = employerType
+      const { insertId, success, message, error } = await createUser(registData);
+      const studentData = {
+        company_name: companyName,
+        email,
+      };
+      // Insert data to 'student' table
+      await createCompany(insertId, studentData);
 
-    if (bdStudent) {
-      // Create New User
-      return await User.create(registData)
-        .then(async (result) => {          
-          const insertId = result.dataValues.user_id          
-          const insertData = {
-            student_code: bdStudent.STUD_ID,
-            first_name: bdStudent.STU_NAME,
-            last_name: bdStudent.STU_SNAME,
-            email,
-            created_by: insertId
-          }          
-          await insertStudent(insertData)
-          
-          return {
-            success: true,
-            message: "Registration completed",
-            error: null
-          }        
-        })
-        .catch(e => {
-          return {
-            success: false,
-            message: "Registration failed",
-            error: e.message
-          }
-        })
+      respSuccess = success;
+      respMessage = message;
+      respError = error;
     }
   }
 
   return {
-    success: false,
-    message: "Registration failed",
-    error: null
+    success: respSuccess,
+    message: respMessage,
+    error: respError,
+  };
+}
+
+async function registerApplicantWithEmail(registData) {
+  let respSuccess = false,
+    respMessage,
+    respError;
+
+  if (registData) {
+    const studentCode = registData.student_code,
+      email = registData.email;
+    let isVerify = true;
+
+    // Check if student code registrated
+    const isRegistered = await checkIfStudentRegistered(studentCode);
+    if (isRegistered) {
+      isVerify = false;
+
+      return {
+        success: respSuccess,
+        message: `Student code ${studentCode} is already registered`,
+      };
+    }
+    // Check duplicate email
+    const isExist = await checkIfEmailExist(email);
+    if (isExist) {
+      isVerify = false;
+
+      return {
+        success: respSuccess,
+        message: `Email ${email} is already registered`,
+      };
+    }
+
+    // Create user
+    if (isVerify) {
+      const { data } = await getBaseDataStudentByCode(studentCode);
+      const bdStudent = data.dataValues;
+
+      if (bdStudent) {
+        // Insert data to 'user' table
+        registData.user_type = applicantType
+        const { insertId, success, message, error } = await createUser(registData);
+        const studentData = {
+          student_code: bdStudent.STUD_ID,
+          first_name: bdStudent.STU_NAME,
+          last_name: bdStudent.STU_SNAME,
+          email,
+        };
+        // Insert data to 'student' table
+        await createStudent(insertId, studentData);
+
+        respSuccess = success;
+        respMessage = message;
+        respError = error;
+      } else {
+        respMessage = `No student code#${studentCode} found`;
+      }
+    }
   }
+
+  return {
+    success: respSuccess,
+    message: respMessage,
+    error: respError,
+  };
 }
 
 async function activateUserByID(id) {
-  let success = false, message = "Activate failed", error = null
+  let success = false,
+    message = "Activate failed",
+    error = null;
 
-  User.update({ active: true }, {
-    where: { user_id: id }
-  }).then(() => {
-    success = true
-    message = "Activate successed"
-  }).catch(error => {
-    error = error.message
-  });
+  User.update(
+    { active: true },
+    {
+      where: { user_id: id },
+    }
+  )
+    .then(() => {
+      success = true;
+      message = "Activate successed";
+    })
+    .catch((error) => {
+      error = error.message;
+    });
 
-  return { success, message, error }
+  return { success, message, error };
 }
 
 module.exports = {
   signInByEmail,
-  checkIfStudentRegistered,
   registerApplicantWithEmail,
+  registerEmployerWithEmail,
   getUserByPK,
-  activateUserByID,  
-}
+  activateUserByID,
+};

@@ -1,7 +1,7 @@
-const applicant = 1;
-const employer = 2;
+const applicantType = 1;
+const employerType = 2;
 
 module.exports = {
-    applicant,
-    employer
+    applicantType,
+    employerType
 }

@@ -2,19 +2,37 @@
   {
     "user_id": "1",
     "user_type": "1",
-    "email": "student@gmail.com",
-    "password": "12123",    
+    "email": "applicant1@gmail.com",
+    "password": "1212312121",    
     "active": 1,
     "created_at": "2021-03-20 15:32:33",
     "latest_login_at": "2021-03-20 18:22:11"
   },
   {
-    "user_id": "6",
+    "user_id": "2",
     "user_type": "2",
-    "email": "employer@gmail.com",
-    "password": "12123",    
+    "email": "employer1@gmail.com",
+    "password": "1212312121",    
     "active": 1,
-    "created_at": "2021-03-20 15:32:33",
-    "latest_login_at": "2021-03-20 18:22:11"
+    "created_at": "2021-03-20 19:30:23",
+    "latest_login_at": ""
+  },
+  {
+    "user_id": "3",
+    "user_type": "2",
+    "email": "employer2@gmail.com",
+    "password": "1212312121",    
+    "active": 1,
+    "created_at": "2021-03-21 18:05:15",
+    "latest_login_at": ""
+  },
+  {
+    "user_id": "4",
+    "user_type": "2",
+    "email": "employer3@gmail.com",
+    "password": "1212312121",    
+    "active": 1,
+    "created_at": "2021-03-23 15:15:15",
+    "latest_login_at": ""
   }
 ]

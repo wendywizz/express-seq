@@ -58,21 +58,21 @@ async function getCompanyByOwner(id) {
   return { data: row, itemCount, message, error }
 }
 
-async function saveByOwner(ownerId, data) {
-  const { itemCount } = await getCompanyByOwner(ownerId)
+async function saveByOwner(userId, data) {
+  const { itemCount } = await getCompanyByOwner(userId)
 
   if (itemCount > 0) {
-    return updateJobByOwner(ownerId, data)
+    return updateJobByOwner(userId, data)
   } else {
-    return createCompany(ownerId, data)
+    return createCompany(userId, data)
   }
 }
 
-async function createCompany(ownerId, insertData) {
+async function createCompany(userId, insertData) {
   let success = false, data = null, message = "Add new company failed", error = null
   const newData = {
     created_at: currentDateTime(),
-    created_by: ownerId,
+    created_by: userId,
     ...insertData
   }
 
@@ -89,23 +89,23 @@ async function createCompany(ownerId, insertData) {
   return { success, data, message, error }
 }
 
-async function updateJobByOwner(ownerId, data) {
-  let success = false, returnData = null, message = `Update company#${ownerId} failed`, error = null
+async function updateJobByOwner(userId, data) {
+  let success = false, returnData = null, message = `Update company#${userId} failed`, error = null
   const updateData = {
     updated_at: currentDateTime(),
     ...data
   }
   const conditions = {
     created_by: {
-      [Op.eq]: ownerId
+      [Op.eq]: userId
     }
   }
   await Company.update(updateData, { where: conditions })
     .then(async () => {
-      const { data } = await getCompanyByOwner(ownerId)
+      const { data } = await getCompanyByOwner(userId)
       returnData = data
       success = true
-      message = `Update company#${ownerId} successed`
+      message = `Update company#${userId} successed`
     })
     .catch(e => {
       error = e.message
@@ -159,6 +159,7 @@ module.exports = {
   getCompany,
   getCompanyByPK,
   getCompanyByOwner,
+  createCompany,
   saveByOwner,
   uploadLogoByPK
 }

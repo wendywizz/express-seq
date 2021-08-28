@@ -85,23 +85,25 @@ async function saveStudentByUserId(userId, data) {
   return { success, data: returnData, message, error }
 }
 
-async function insertStudent(data) {
-  let success = false, message = 'Add new student failed', error = null
-  const insertData = {
-    ...data,
-    created_at: currentDateTime()
+async function createStudent(userId, insertData) {
+  let success = false, data = null, message = 'Add new student failed', error = null
+  const newData = {    
+    created_at: currentDateTime(),
+    created_by: userId,
+    ...insertData
   }
 
-  await Student.create(insertData)
-    .then(() => {
+  await Student.create(newData)
+    .then(result => {
       success = true
+      data = result.dataValues
       message = 'Add new student successed'
     })
     .catch(e => {
       error = e.message
     })
 
-  return { success, message, error }
+  return { success, data, message, error }
 }
 
 async function getBaseDataStudentByCode(studentCode) {
@@ -129,5 +131,5 @@ module.exports = {
   getBaseDataStudentByCode,
   identifyStudent,
   saveStudentByUserId,
-  insertStudent
+  createStudent
 };
