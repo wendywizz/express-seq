@@ -45,7 +45,7 @@ async function getJob(conditions = null, length = DISPLAY_LENGTH, start = DISPLA
   return { data, itemCount, message, error }
 }
 
-async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START) {
+async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START, sorting) {
   let data = [], itemCount = 0, message = "Data not found", error = null
   let conditions = {
     active: {
@@ -93,11 +93,26 @@ async function searchJob(params, length = DISPLAY_LENGTH, start = DISPLAY_START)
       [Op.eq]: params.district
     }
   }
+  let orderByCondition
+  switch (sorting) {
+    case "m": default:
+      break;
+    case "d":
+      orderByCondition = ["created_at", "DESC"]
+      break;
+    case "n":
+      orderByCondition = ["company_owner", "ASC"]
+      break;
+    case "ltg":
+      orderByCondition = [["salary_type", "ASC"], ["salary_min", "ASC"], ["salary_max", "ASC"]]
+      break;
+    case "gtl":
+      orderByCondition = [["salary_type", "ASC"], ["salary_min", "DESC"], ["salary_max","DESC"]]
+      break;
+  }
   await Job.findAndCountAll({
     where: conditions,
-    order: [
-      ['created_at', 'DESC']
-    ],
+    order: orderByCondition && [orderByCondition],
     limit: Number(length),
     offset: Number(start),
     include: [

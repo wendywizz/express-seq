@@ -15,7 +15,7 @@ async function view(req, res) {
 }
 
 async function search(req, res) {
-  const { keyword, category, type, salary_min, salary_max, province, district, length, start } = req.query
+  const { keyword, category, type, salary_min, salary_max, province, district, length, start, sorting } = req.query
   const params = {
     keyword,
     jobType: type,
@@ -25,7 +25,7 @@ async function search(req, res) {
     salaryMin: salary_min,
     salaryMax: salary_max,
   }
-  const { data, itemCount, message, error } = await JobMap.searchJob(params, length, start)
+  const { data, itemCount, message, error } = await JobMap.searchJob(params, length, start, sorting)
 
   const serverUrl = req.protocol + '://' + req.get('host') + "/"
   const rData = data.map(value => {
