@@ -15,13 +15,17 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
+    additional: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false
     },
     deleted: {
       type: DataTypes.BOOLEAN,
-      defaultValue: 1
+      defaultValue: 0
     },
     created_by: {
       type: DataTypes.BIGINT,

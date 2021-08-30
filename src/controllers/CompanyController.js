@@ -1,5 +1,4 @@
 const { CompanyMap } = require("../models/map")
-const CompanyModel = require("../models/orm/CompanyModel");
 const { uploadLogoByPK } = require("../models/map/CompanyMap");
 const url = require('url');
 const { LOGO_SOURCE_URL } = require("../config/path");

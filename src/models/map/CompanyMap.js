@@ -142,8 +142,7 @@ async function uploadLogoByPK(companyId, file, reqUrl) {
           // Remove old file
           if (oldLogofileName) {
             let imagePath = __dir + UPLOAD_COMPANY_LOGO_PATH + oldLogofileName
-            console.log("image=",imagePath)
-            //await fs.unlink(imagePath)
+            await fs.unlink(imagePath)
           }
         })
         .catch(e => {

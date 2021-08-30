@@ -20,7 +20,7 @@ module.exports = (app) => {
   router.get("/view", companyCtrl.getCompany)
   router.get("/info-owner", companyCtrl.getInfoByOwner)
   router.post("/save-owner", companyCtrl.saveByOwner)
-  router.post("/upload-logo", uploadLogo.single('imageLogo'), companyCtrl.uploadLogo)
+  router.post("/upload-logo", uploadLogo.single('logo_file'), companyCtrl.uploadLogo)
 
   app.use("/api/company", router)
 }
