@@ -1,4 +1,5 @@
 const multer = require("multer")
+const randomstring = require("randomstring")
 const path = require("path")
 const { UPLOAD_RESUME_PATH } = require("../config/path")
 
@@ -10,14 +11,16 @@ module.exports = (app) => {
       cb(null, UPLOAD_RESUME_PATH)
     },
     filename: (req, file, cb) => {
-      const userId = req.body.user_id
-      const fileName = `${userId}_${Date.now()}${path.extname(file.originalname)}`
+      const fileName = `${Date.now()}-${randomstring.generate(10)}${path.extname(file.originalname)}`
+
       cb(null, fileName)
     }
   })
   const uploadResume = multer({ storage })
-
-  router.post("/add", uploadResume.single('resume_file'), resumeCtrl.add)
+  
+  router.get("/list")
+  router.get("/view")
+  router.post("/add", uploadResume.single('file'), resumeCtrl.add)
   router.post("/remove", resumeCtrl.remove)
 
   app.use("/api/resume", router)

@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(150),
       allowNull: false
     },
-    file_url: {
+    resume_file: {
       type: DataTypes.TEXT,
       allowNull: false
     },
