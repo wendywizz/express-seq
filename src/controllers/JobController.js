@@ -1,5 +1,5 @@
 const { JobMap } = require("../models/map")
-const { CATEGORY_IMAGE_PATH, LOGO_SOURCE_URL } = require("../config/path")
+const { CATEGORY_IMAGE_PATH, LOGO_SOURCE_PATH } = require("../config/path")
 
 async function view(req, res) {
   const { id } = req.query
@@ -8,7 +8,7 @@ async function view(req, res) {
   const serverUrl = req.protocol + '://' + req.get('host') + "/"
   const rData = {
     ...data.dataValues,
-    logo_source_url: serverUrl + LOGO_SOURCE_URL
+    logo_source_url: serverUrl + LOGO_SOURCE_PATH
   }
 
   res.send({ data: rData, message, error })
@@ -31,7 +31,7 @@ async function search(req, res) {
   const rData = data.map(value => {
     return {
       ...value.dataValues,
-      logo_source_url: serverUrl + LOGO_SOURCE_URL
+      logo_source_url: serverUrl + LOGO_SOURCE_PATH
     }
   })
 
@@ -45,7 +45,6 @@ async function getJobType(req, res) {
 }
 
 async function getJobCategory(req, res) {
-  //const { show_count } = req.query
   const { data, itemCount, message, error } = await JobMap.getJobCategory()
   
   const serverUrl = req.protocol + '://' + req.get('host') + "/"

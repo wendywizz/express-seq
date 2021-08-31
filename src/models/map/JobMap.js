@@ -1,5 +1,5 @@
 const { Job, JobType, SalaryType, Province, District, Region, JobCategory, Company } = require("../orm")
-const { Op, QueryTypes } = require("sequelize")
+const { Op } = require("sequelize")
 const moment = require("moment")
 const { currentDateTime, formatDate } = require("../../utils/DateTime")
 const { DISPLAY_START, DISPLAY_LENGTH } = require("../../constants/Record")
