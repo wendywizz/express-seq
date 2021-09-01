@@ -6,7 +6,6 @@ const ployloraConn = ployloraDB
 
 // Setting Local database connection instance
 const Sequelize = require("sequelize");
-const { or } = require("sequelize");
 
 const local = new Sequelize(localConn.database, localConn.username, localConn.password, {
   host: localConn.host,
@@ -105,7 +104,22 @@ orm.Resume.belongsTo(orm.User, {
   foreignKey: "created_by"
 })
 
-// Ploylora
+/* Apply */
+orm.Apply = require("./ApplyModel")(local, Sequelize)
+orm.Apply.belongsTo(orm.User, {
+  as: "user_asso",
+  foreignKey: "created_by"
+})
+orm.Apply.belongsTo(orm.Job, {
+  as: "job_asso",
+  foreignKey: "job_id"
+})
+orm.Apply.belongsTo(orm.Resume, {
+  as: "resume_asso",
+  foreignKey: "resume_id"
+})
+
+/* Ploylora */
 orm.ploylora = ploylora
 orm.RStudent = require("./RStudentModel.js")(ploylora, Sequelize)
 

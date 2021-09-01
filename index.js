@@ -44,7 +44,8 @@ require("./src/routes/AuthenRoute.js")(app)
 require("./src/routes/JobRoute.js")(app)
 require("./src/routes/AreaRoute.js")(app)
 require("./src/routes/UserRoute.js")(app)
-require("./src/routes/ResumeRoute")(app)
+require("./src/routes/ResumeRoute.js")(app)
+require("./src/routes/ApplyRoute.js")(app)
 
 const port = process.env.PORT || 3001
 app.listen(port, () => {

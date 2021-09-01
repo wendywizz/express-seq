@@ -19,7 +19,6 @@ module.exports = (app) => {
   const uploadResume = multer({ storage });
 
   router.get("/list-by-user", resumeCtrl.listByUser);
-  router.get("/view");
   router.post("/add", uploadResume.single("file"), resumeCtrl.add);
   router.post("/remove", resumeCtrl.remove);
 

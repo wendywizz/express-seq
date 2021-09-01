@@ -4,6 +4,7 @@ const JobMap = require("./JobMap")
 const CompanyMap = require("./CompanyMap")
 const AreaMap = require("./AreaMap")
 const ResumeMap = require("./ResumeMap")
+const ApplyMap = require("./ApplyMap")
 
 module.exports = {
   StudentMap,
@@ -11,5 +12,6 @@ module.exports = {
   JobMap,
   CompanyMap,
   AreaMap,
-  ResumeMap
+  ResumeMap,
+  ApplyMap
 }
