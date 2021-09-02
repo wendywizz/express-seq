@@ -28,7 +28,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      expires: 30000 * 30000 * 24
+      expires: new Date(Date.now() + 3600000),
+      maxAge: 100 * 3600000
     }
   })
 )

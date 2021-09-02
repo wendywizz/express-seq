@@ -227,10 +227,6 @@ async function getJobCategory(countActiveJob=false) {
   return { data, itemCount, message, error }
 }
 
-/*async function countActiveJobByCategory(categoryId) {
-  let itemCount = 0, error = null
-}*/
-
 async function getSalaryType() {
   let data = [], itemCount = 0, message = "No data found", error = null
 

@@ -9,9 +9,9 @@ async function add(req, res) {
     resume_id: resume,
     created_by: user,
   };
-  const { success, data, message, error } = await ApplyMap.applyResume(newData);
 
-  res.send({ success, data, message, error });
+  const response = await ApplyMap.applyResume(newData);
+  res.send(response);
 }
 
 async function checkApplied(req, res) {
@@ -21,7 +21,15 @@ async function checkApplied(req, res) {
   res.send({ applied: isApplied })
 }
 
+async function listApplying(req, res) {
+  const { user, status } = req.query
+
+  const response = await ApplyMap.listApplyingByUser(user, status)
+  res.send(response)
+}
+
 module.exports = {
   add,
-  checkApplied
+  checkApplied,
+  listApplying
 }
