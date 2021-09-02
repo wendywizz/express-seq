@@ -21,6 +21,30 @@ async function applyResume(insertData) {
   return { success, message, error }
 }
 
+async function checkAppliedByUser(jobId, userId) {
+  let isApplied = true;
+
+  if (jobId && userId) {
+
+    const conditions = {
+      job_id: {
+        [Op.eq]: jobId,
+      },
+      created_by: {
+        [Op.eq]: userId
+      }
+    };
+    await Apply.count({ where: conditions }).then((rowCount) => {
+      if (rowCount <= 0) {
+        isApplied = false;
+      }
+    });
+  }
+  
+  return isApplied;
+}
+
 module.exports = {
-  applyResume
+  applyResume,
+  checkAppliedByUser
 }

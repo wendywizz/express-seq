@@ -1,7 +1,7 @@
 const { ApplyMap } = require("../models/map")
 
 async function add(req, res) {
-  const { job, resume, user } = req.body;
+  const { job, resume, user, greeting } = req.body;
 
   const newData = {
     job_id: job,
@@ -14,6 +14,14 @@ async function add(req, res) {
   res.send({ success, data, message, error });
 }
 
+async function checkApplied(req, res) {
+  const { job, user } = req.query;
+
+  const isApplied = await ApplyMap.checkAppliedByUser(job, user);
+  res.send({ applied: isApplied })
+}
+
 module.exports = {
-  add
+  add,
+  checkApplied
 }
